@@ -1,10 +1,123 @@
 import CONFIG from '../config';
 
 const ENDPOINTS = {
-  ENDPOINT: `${CONFIG.BASE_URL}/your/endpoint/here`,
+  REGISTER: `${CONFIG.BASE_URL}/register`,
+  LOGIN: `${CONFIG.BASE_URL}/login`,
+  GET_STORIES: `${CONFIG.BASE_URL}/stories`,
+  ADD_STORY: `${CONFIG.BASE_URL}/stories`,
+  STORY_DETAIL: (id) => `${CONFIG.BASE_URL}/stories/${id}`,
 };
 
-export async function getData() {
-  const fetchResponse = await fetch(ENDPOINTS.ENDPOINT);
-  return await fetchResponse.json();
+/**
+ * Fungsi untuk mendapatkan daftar cerita
+ * @param {number} page - Halaman yang diminta (opsional)
+ * @param {number} size - Jumlah item per halaman (opsional)
+ * @param {number} location - Flag untuk menyertakan lokasi (opsional)
+ * @returns {Promise<Array>} - Array berisi data cerita
+ */
+export async function getAllStories(page = 1, size = 10, location = 0) {
+  try {
+    // Token diperlukan untuk mengakses API
+    const token = localStorage.getItem('token');
+    if (!token) {
+      throw new Error('Token tidak ditemukan. Silakan login terlebih dahulu.');
+    }
+
+    const response = await fetch(
+      `${ENDPOINTS.GET_STORIES}?page=${page}&size=${size}&location=${location}`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+
+    const responseJson = await response.json();
+
+    if (responseJson.error) {
+      throw new Error(responseJson.message);
+    }
+
+    return responseJson.listStory || [];
+  } catch (error) {
+    console.error('Error getting stories:', error);
+    throw new Error('Gagal memuat cerita. ' + error.message);
+  }
+}
+
+/**
+ * Fungsi untuk mendapatkan detail cerita berdasarkan ID
+ * @param {string} id - ID cerita
+ * @returns {Promise<Object>} - Data detail cerita
+ */
+export async function getStoryDetail(id) {
+  try {
+    const token = localStorage.getItem('token');
+    if (!token) {
+      throw new Error('Token tidak ditemukan. Silakan login terlebih dahulu.');
+    }
+
+    const response = await fetch(ENDPOINTS.STORY_DETAIL(id), {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    const responseJson = await response.json();
+
+    if (responseJson.error) {
+      throw new Error(responseJson.message);
+    }
+
+    return responseJson.story;
+  } catch (error) {
+    console.error('Error getting story detail:', error);
+    throw new Error('Gagal memuat detail cerita. ' + error.message);
+  }
+}
+
+/**
+ * Fungsi untuk menambahkan cerita baru
+ * @param {Object} storyData - Data cerita yang akan ditambahkan
+ * @param {File} storyData.photo - File foto cerita
+ * @param {string} storyData.description - Deskripsi cerita
+ * @param {number} storyData.lat - Latitude (opsional)
+ * @param {number} storyData.lon - Longitude (opsional)
+ * @returns {Promise<Object>} - Respons dari server
+ */
+export async function addStory({ photo, description, lat, lon }) {
+  try {
+    const token = localStorage.getItem('token');
+    if (!token) {
+      throw new Error('Token tidak ditemukan. Silakan login terlebih dahulu.');
+    }
+
+    const formData = new FormData();
+    formData.append('photo', photo);
+    formData.append('description', description);
+    
+    if (lat !== undefined && lon !== undefined) {
+      formData.append('lat', lat);
+      formData.append('lon', lon);
+    }
+
+    const response = await fetch(ENDPOINTS.ADD_STORY, {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+      body: formData,
+    });
+
+    const responseJson = await response.json();
+
+    if (responseJson.error) {
+      throw new Error(responseJson.message);
+    }
+
+    return responseJson;
+  } catch (error) {
+    console.error('Error adding story:', error);
+    throw new Error('Gagal menambahkan cerita. ' + error.message);
+  }
 }

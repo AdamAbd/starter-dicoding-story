@@ -15,9 +15,9 @@ class App {
   }
 
   _setupDrawer() {
-    this.#drawerButton.addEventListener('click', () => {
-      this.#navigationDrawer.classList.toggle('open');
-    });
+    // this.#drawerButton.addEventListener('click', () => {
+    //   this.#navigationDrawer.classList.toggle('open');
+    // });
 
     document.body.addEventListener('click', (event) => {
       if (!this.#navigationDrawer.contains(event.target) && !this.#drawerButton.contains(event.target)) {

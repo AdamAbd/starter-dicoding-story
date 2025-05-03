@@ -1,6 +1,12 @@
 // CSS imports
 import '../styles/styles.css';
 
+// Import komponen
+import './components/app-bar';
+import './components/story-list';
+import './components/story-card';
+import './components/app-footer';
+
 import App from './pages/app';
 
 document.addEventListener('DOMContentLoaded', async () => {
