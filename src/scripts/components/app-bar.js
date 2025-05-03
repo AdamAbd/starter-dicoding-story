@@ -25,36 +25,20 @@ class AppBar extends HTMLElement {
               <i class="fa-solid fa-bars"></i>
             </div>
             <div class="nav-links" id="navLinks">
-              <a href="#/"><i class="fa-solid fa-house"></i> Beranda</a>
               ${isLogin ? `
-                <a href="#/explore"><i class="fa-solid fa-compass"></i> Jelajahi</a>
-                <a href="#/saved"><i class="fa-solid fa-bookmark"></i> Tersimpan</a>
-                <a href="#/profile"><i class="fa-solid fa-user"></i> Profil</a>
-              ` : ''}
-            </div>
-            ${isLogin ? `
-              <div class="auth-buttons">
-                <a href="#/create" class="btn">
-                  <i class="fa-solid fa-plus"></i>
-                  Buat Story
-                </a>
+                <a href="#/setting"><i class="fa-solid fa-gear"></i> Settings</a>
                 <button class="btn btn-logout" id="logoutButton">
-                  <i class="fa-solid fa-sign-out-alt"></i>
-                  Keluar
+                  <i class="fa-solid fa-sign-out-alt"></i> Keluar
                 </button>
-              </div>
-            ` : `
-              <div class="auth-buttons">
+              ` : `
                 <a href="#/login" class="btn btn-login">
-                  <i class="fa-solid fa-sign-in-alt"></i>
-                  Masuk
+                  <i class="fa-solid fa-sign-in-alt"></i> Masuk
                 </a>
                 <a href="#/register" class="btn btn-register">
-                  <i class="fa-solid fa-user-plus"></i>
-                  Daftar
+                  <i class="fa-solid fa-user-plus"></i> Daftar
                 </a>
-              </div>
-            `}
+              `}
+            </div>
           </nav>
         </div>
       </header>
@@ -66,12 +50,19 @@ class AppBar extends HTMLElement {
   _initListeners() {
     const menuToggle = this.querySelector('#menuToggle');
     const navLinks = this.querySelector('#navLinks');
-    const createStoryButton = this.querySelector('#createStoryButton');
     const logoutButton = this.querySelector('#logoutButton');
 
-    if (menuToggle) {
-      menuToggle.addEventListener('click', () => {
+    if (menuToggle && navLinks) {
+      menuToggle.addEventListener('click', (event) => {
+        event.stopPropagation();
         navLinks.classList.toggle('active');
+      });
+
+      // Tutup menu saat mengklik di luar menu
+      document.addEventListener('click', (event) => {
+        if (!navLinks.contains(event.target) && !menuToggle.contains(event.target)) {
+          navLinks.classList.remove('active');
+        }
       });
     }
 
@@ -82,19 +73,6 @@ class AppBar extends HTMLElement {
         window.location.reload();
       });
     }
-
-    if (createStoryButton) {
-      createStoryButton.addEventListener('click', () => {
-        window.location.href = '#/create';
-      });
-    }
-
-    // Close menu when clicking outside
-    document.addEventListener('click', (event) => {
-      if (!navLinks.contains(event.target) && !menuToggle.contains(event.target)) {
-        navLinks.classList.remove('active');
-      }
-    });
   }
 }
 

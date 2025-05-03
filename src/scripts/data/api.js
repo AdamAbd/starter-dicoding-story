@@ -164,3 +164,72 @@ export async function addStoryAsGuest({ photo, description, lat, lon }) {
     throw new Error('Gagal menambahkan cerita sebagai tamu. ' + error.message);
   }
 }
+
+/**
+ * Fungsi untuk subscribe push notification
+ * @param {Object} subscription - Data subscription dari PushManager
+ * @param {string} subscription.endpoint
+ * @param {Object} subscription.keys
+ * @param {string} subscription.keys.p256dh
+ * @param {string} subscription.keys.auth
+ * @returns {Promise<Object>} - Respons dari server
+ */
+export async function subscribePushNotification({ endpoint, keys }) {
+  try {
+    const token = localStorage.getItem('accessToken');
+    if (!token) {
+      throw new Error('Token tidak ditemukan. Silakan login terlebih dahulu.');
+    }
+    const response = await fetch(`${CONFIG.BASE_URL}/notifications/subscribe`, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        endpoint,
+        keys: JSON.stringify(keys),
+        p256dh: keys.p256dh,
+        auth: keys.auth
+      })
+    });
+    const responseJson = await response.json();
+    if (responseJson.error) {
+      throw new Error(responseJson.message);
+    }
+    return responseJson;
+  } catch (error) {
+    console.error('Error subscribing push notification:', error);
+    throw new Error('Gagal subscribe push notification. ' + error.message);
+  }
+}
+
+/**
+ * Fungsi untuk unsubscribe push notification
+ * @param {string} endpoint - Endpoint subscription yang ingin dihapus
+ * @returns {Promise<Object>} - Respons dari server
+ */
+export async function unsubscribePushNotification(endpoint) {
+  try {
+    const token = localStorage.getItem('accessToken');
+    if (!token) {
+      throw new Error('Token tidak ditemukan. Silakan login terlebih dahulu.');
+    }
+    const response = await fetch(`${CONFIG.BASE_URL}/notifications/subscribe`, {
+      method: 'DELETE',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ endpoint })
+    });
+    const responseJson = await response.json();
+    if (responseJson.error) {
+      throw new Error(responseJson.message);
+    }
+    return responseJson;
+  } catch (error) {
+    console.error('Error unsubscribing push notification:', error);
+    throw new Error('Gagal unsubscribe push notification. ' + error.message);
+  }
+}

@@ -2,6 +2,7 @@
 import '../styles/styles.css';
 import '../styles/auth.css';
 import '../styles/story-detail-dialog.css';
+import '../styles/setting.css';
 
 // Import komponen
 import './components/app-bar';
