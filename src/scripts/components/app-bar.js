@@ -34,10 +34,10 @@ class AppBar extends HTMLElement {
             </div>
             ${isLogin ? `
               <div class="auth-buttons">
-                <button class="btn" id="createStoryButton">
+                <a href="#/create" class="btn">
                   <i class="fa-solid fa-plus"></i>
                   Buat Story
-                </button>
+                </a>
                 <button class="btn btn-logout" id="logoutButton">
                   <i class="fa-solid fa-sign-out-alt"></i>
                   Keluar

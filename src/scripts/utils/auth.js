@@ -61,6 +61,17 @@ export function checkAuthenticatedRoute(page) {
   return page;
 }
 
+export function checkAuthenticatedRouteOnly(page) {
+  const isLogin = !!getAccessToken();
+
+  if (!isLogin) {
+    location.hash = '/login';
+    return null;
+  }
+
+  return page;
+}
+
 export function getLogout() {
   removeAccessToken();
 }

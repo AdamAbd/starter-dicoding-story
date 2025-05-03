@@ -126,3 +126,41 @@ export async function addStory({ photo, description, lat, lon }) {
     throw new Error('Gagal menambahkan cerita. ' + error.message);
   }
 }
+
+/**
+ * Fungsi untuk menambahkan cerita baru sebagai tamu
+ * @param {Object} storyData - Data cerita yang akan ditambahkan
+ * @param {File} storyData.photo - File foto cerita
+ * @param {string} storyData.description - Deskripsi cerita
+ * @param {number} storyData.lat - Latitude (opsional)
+ * @param {number} storyData.lon - Longitude (opsional)
+ * @returns {Promise<Object>} - Respons dari server
+ */
+export async function addStoryAsGuest({ photo, description, lat, lon }) {
+  try {
+    const formData = new FormData();
+    formData.append('photo', photo);
+    formData.append('description', description);
+    
+    if (lat !== undefined && lon !== undefined) {
+      formData.append('lat', lat);
+      formData.append('lon', lon);
+    }
+
+    const response = await fetch(`${ENDPOINTS.ADD_STORY}/guest`, {
+      method: 'POST',
+      body: formData,
+    });
+
+    const responseJson = await response.json();
+
+    if (responseJson.error) {
+      throw new Error(responseJson.message);
+    }
+
+    return responseJson;
+  } catch (error) {
+    console.error('Error adding story as guest:', error);
+    throw new Error('Gagal menambahkan cerita sebagai tamu. ' + error.message);
+  }
+}

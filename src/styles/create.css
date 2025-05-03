@@ -1,0 +1,178 @@
+/* Create Story Page Styles */
+.create-container {
+  padding: 20px;
+  max-width: 800px;
+  margin: 0 auto;
+  margin-top: 20px;
+  margin-bottom: 40px;
+}
+
+.create-card {
+  background-color: white;
+  border-radius: 10px;
+  box-shadow: var(--shadow);
+  padding: 30px;
+  width: 100%;
+}
+
+.create-title {
+  color: var(--primary-color);
+  font-size: 2rem;
+  margin-bottom: 10px;
+  text-align: center;
+}
+
+.create-subtitle {
+  color: var(--dark-color);
+  text-align: center;
+  margin-bottom: 25px;
+}
+
+/* Photo Upload Styles */
+.photo-upload {
+  margin-bottom: 20px;
+}
+
+.photo-preview {
+  width: 100%;
+  height: 300px;
+  border: 2px dashed var(--gray-color);
+  border-radius: 5px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 15px;
+  overflow: hidden;
+  position: relative;
+}
+
+.photo-preview img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+}
+
+.photo-preview.has-image {
+  border: none;
+}
+
+.photo-actions {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 15px;
+}
+
+.photo-actions .btn {
+  flex: 1;
+  justify-content: center;
+}
+
+.photo-error {
+  color: #e74c3c;
+  font-size: 0.9rem;
+  margin-top: 5px;
+}
+
+/* Map Styles */
+.map-container {
+  margin-bottom: 20px;
+}
+
+#map {
+  height: 300px;
+  width: 100%;
+  border-radius: 5px;
+  margin-bottom: 10px;
+}
+
+.location-info {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.9rem;
+  color: var(--dark-color);
+  margin-bottom: 10px;
+}
+
+.location-reset {
+  color: var(--primary-color);
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 600;
+  color: var(--dark-color);
+}
+
+.form-group textarea {
+  width: 100%;
+  padding: 12px 15px;
+  border: 1px solid var(--gray-color);
+  border-radius: 5px;
+  font-size: 1rem;
+  transition: border-color 0.3s;
+}
+
+.form-group textarea:focus {
+  border-color: var(--primary-color);
+  outline: none;
+}
+
+/* Form Validation Styles */
+.form-group.error input,
+.form-group.error textarea {
+  border-color: #e74c3c;
+}
+
+.form-error {
+  color: #e74c3c;
+  font-size: 0.9rem;
+  margin-top: 5px;
+}
+
+/* Submit Buttons */
+.submit-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.submit-actions .btn {
+  flex: 1;
+}
+
+.btn-send {
+  padding: 12px;
+  margin-top: 10px;
+  font-size: 1rem;
+  justify-content: center;
+}
+
+.btn-guest {
+  padding: 12px;
+  margin-top: 10px;
+  font-size: 1rem;
+  justify-content: center;
+  background-color: var(--accent-color);
+}
+
+.btn-guest:hover {
+  background-color: #2aa9bb;
+}
+
+/* Responsive Styles */
+@media (max-width: 768px) {
+  .create-card {
+    padding: 20px;
+  }
+  
+  .photo-actions {
+    flex-direction: column;
+  }
+  
+  .submit-actions {
+    flex-direction: column;
+  }
+}
