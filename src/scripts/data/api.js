@@ -13,12 +13,12 @@ const ENDPOINTS = {
  * @param {number} page - Halaman yang diminta (opsional)
  * @param {number} size - Jumlah item per halaman (opsional)
  * @param {number} location - Flag untuk menyertakan lokasi (opsional)
- * @returns {Promise<Array>} - Array berisi data cerita
+ * @returns {Promise<Object>} - Object berisi data cerita dan informasi paginasi
  */
-export async function getAllStories(page = 1, size = 10, location = 0) {
+export async function getAllStories(page = 1, size = 12, location = 1) {
   try {
     // Token diperlukan untuk mengakses API
-    const token = localStorage.getItem('token');
+    const token = localStorage.getItem('accessToken');
     if (!token) {
       throw new Error('Token tidak ditemukan. Silakan login terlebih dahulu.');
     }
@@ -38,7 +38,12 @@ export async function getAllStories(page = 1, size = 10, location = 0) {
       throw new Error(responseJson.message);
     }
 
-    return responseJson.listStory || [];
+    return {
+      stories: responseJson.listStory || [],
+      page: page,
+      totalPages: Math.ceil(responseJson.totalStories / size) || 1,
+      hasMore: page < Math.ceil(responseJson.totalStories / size)
+    };
   } catch (error) {
     console.error('Error getting stories:', error);
     throw new Error('Gagal memuat cerita. ' + error.message);
@@ -52,7 +57,7 @@ export async function getAllStories(page = 1, size = 10, location = 0) {
  */
 export async function getStoryDetail(id) {
   try {
-    const token = localStorage.getItem('token');
+    const token = localStorage.getItem('accessToken');
     if (!token) {
       throw new Error('Token tidak ditemukan. Silakan login terlebih dahulu.');
     }
@@ -87,7 +92,7 @@ export async function getStoryDetail(id) {
  */
 export async function addStory({ photo, description, lat, lon }) {
   try {
-    const token = localStorage.getItem('token');
+    const token = localStorage.getItem('accessToken');
     if (!token) {
       throw new Error('Token tidak ditemukan. Silakan login terlebih dahulu.');
     }

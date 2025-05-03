@@ -13,6 +13,13 @@ class StoryList extends HTMLElement {
     this._stories = stories;
     this.render();
   }
+  
+  /**
+   * @returns {Array} - Array berisi data cerita saat ini
+   */
+  get stories() {
+    return this._stories;
+  }
 
   render() {
     this.innerHTML = `
@@ -35,6 +42,9 @@ class StoryList extends HTMLElement {
     `;
 
     const storiesGrid = this.querySelector('#storiesGrid');
+    
+    // Hapus semua story card yang ada
+    storiesGrid.innerHTML = this._stories.length ? '' : '<p>Tidak ada cerita yang tersedia.</p>';
     
     // Render setiap story card
     this._stories.forEach(story => {

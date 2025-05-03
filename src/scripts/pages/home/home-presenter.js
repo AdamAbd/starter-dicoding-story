@@ -3,28 +3,67 @@ class HomePresenter {
     this._view = view;
     this._storyService = storyService;
     this._stories = [];
+    this._currentPage = 1;
+    this._hasMoreStories = true;
+    this._isLoading = false;
   }
 
-  async getAllStories() {
+  async getAllStories(resetPage = true) {
+    if (this._isLoading) return;
+    
     try {
-      this._view.showLoading();
-      this._stories = await this._storyService.getAllStories();
-      this._view.hideLoading();
-      
-      if (this._stories.length > 0) {
-        this._view.showStories(this._stories);
+      if (resetPage) {
+        this._currentPage = 1;
+        this._stories = [];
+        this._hasMoreStories = true;
+        this._view.showLoading();
       } else {
+        this._view.showLoadingMore();
+      }
+      
+      this._isLoading = true;
+      const result = await this._storyService.getAllStories(this._currentPage);
+      this._isLoading = false;
+      
+      if (resetPage) {
+        this._view.hideLoading();
+      } else {
+        this._view.hideLoadingMore();
+      }
+      
+      this._hasMoreStories = result.hasMore;
+      
+      if (result.stories.length > 0) {
+        this._stories = resetPage ? result.stories : [...this._stories, ...result.stories];
+        this._view.showStories(this._stories);
+      } else if (resetPage) {
         this._view.showEmptyStories();
       }
     } catch (error) {
-      this._view.hideLoading();
+      this._isLoading = false;
+      
+      if (resetPage) {
+        this._view.hideLoading();
+      } else {
+        this._view.hideLoadingMore();
+      }
+      
       this._view.showError(error.message);
       
       // Tampilkan data dummy jika API error (untuk keperluan development)
-      this._loadDummyData();
+      if (resetPage) {
+        this._loadDummyData();
+      }
     }
   }
 
+  async loadMoreStories() {
+    if (this._isLoading || this._hasMoreStories) return;
+    
+    this._currentPage += 1;
+    await this.getAllStories(false);
+  }
+  
   _loadDummyData() {
     // Data dummy untuk keperluan development
     const dummyStories = [
