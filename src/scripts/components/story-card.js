@@ -22,7 +22,7 @@ class StoryCard extends HTMLElement {
     if (!this._story) return;
 
     const { name, description, photoUrl, createdAt } = this._story;
-    
+
     const date = new Date(createdAt);
     const formattedDate = new Intl.DateTimeFormat('id-ID', {
       day: 'numeric',
@@ -67,14 +67,14 @@ class StoryCard extends HTMLElement {
       storyCard.addEventListener('click', (event) => {
         // Jangan buka dialog jika yang diklik adalah tombol aksi
         if (event.target.closest('.action-btn')) return;
-        
+
         // Cari atau buat dialog detail cerita
         let storyDetailDialog = document.querySelector('story-detail-dialog');
         if (!storyDetailDialog) {
           storyDetailDialog = document.createElement('story-detail-dialog');
           document.body.appendChild(storyDetailDialog);
         }
-        
+
         // Tampilkan dialog dengan ID cerita
         storyDetailDialog.showStory(this._story.id);
       });

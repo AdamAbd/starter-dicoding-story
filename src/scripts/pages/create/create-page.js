@@ -86,7 +86,7 @@ class CreatePage {
   async afterRender() {
     // Cek apakah user sudah login
     checkAuthenticatedRouteOnly(this);
-    
+
     // Inisialisasi presenter
     const createStoryForm = document.getElementById('createStoryForm');
     const presenter = new CreatePresenter({
@@ -108,9 +108,9 @@ class CreatePage {
       cameraModal: document.getElementById('cameraModal'),
       closeCameraModal: document.getElementById('closeCameraModal'),
       cameraPreview: document.getElementById('cameraPreview'),
-      captureButton: document.getElementById('captureButton')
+      captureButton: document.getElementById('captureButton'),
     });
-    
+
     presenter.init();
   }
 }

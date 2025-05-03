@@ -42,7 +42,7 @@ export async function getAllStories(page = 1, size = 12, location = 1) {
       stories: responseJson.listStory || [],
       page: page,
       totalPages: Math.ceil(responseJson.totalStories / size) || 1,
-      hasMore: page < Math.ceil(responseJson.totalStories / size)
+      hasMore: page < Math.ceil(responseJson.totalStories / size),
     };
   } catch (error) {
     console.error('Error getting stories:', error);
@@ -100,7 +100,7 @@ export async function addStory({ photo, description, lat, lon }) {
     const formData = new FormData();
     formData.append('photo', photo);
     formData.append('description', description);
-    
+
     if (lat !== undefined && lon !== undefined) {
       formData.append('lat', lat);
       formData.append('lon', lon);
@@ -141,7 +141,7 @@ export async function addStoryAsGuest({ photo, description, lat, lon }) {
     const formData = new FormData();
     formData.append('photo', photo);
     formData.append('description', description);
-    
+
     if (lat !== undefined && lon !== undefined) {
       formData.append('lat', lat);
       formData.append('lon', lon);
@@ -183,15 +183,15 @@ export async function subscribePushNotification({ endpoint, keys }) {
     const response = await fetch(`${CONFIG.BASE_URL}/notifications/subscribe`, {
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${token}`,
+        Authorization: `Bearer ${token}`,
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
         endpoint,
         keys: JSON.stringify(keys),
         p256dh: keys.p256dh,
-        auth: keys.auth
-      })
+        auth: keys.auth,
+      }),
     });
     const responseJson = await response.json();
     if (responseJson.error) {
@@ -218,10 +218,10 @@ export async function unsubscribePushNotification(endpoint) {
     const response = await fetch(`${CONFIG.BASE_URL}/notifications/subscribe`, {
       method: 'DELETE',
       headers: {
-        'Authorization': `Bearer ${token}`,
+        Authorization: `Bearer ${token}`,
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ endpoint })
+      body: JSON.stringify({ endpoint }),
     });
     const responseJson = await response.json();
     if (responseJson.error) {

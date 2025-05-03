@@ -45,10 +45,10 @@ export default class HomePage {
     loadingElement.innerHTML = '<p>Memuat cerita...</p>';
     loadingElement.style.display = 'none';
     storyListElement.after(loadingElement);
-    
+
     const loadingMoreElement = document.querySelector('#loading-container');
     const observerTarget = document.querySelector('#observer-target');
-    
+
     // Definisikan view interface untuk presenter
     const view = {
       showLoading: () => {
@@ -72,19 +72,19 @@ export default class HomePage {
       showError: (message) => {
         console.error(message);
         // Bisa ditambahkan tampilan error yang lebih baik di sini
-      }
+      },
     };
-    
+
     // Inisialisasi presenter
     const storyService = {
-      getAllStories: (page) => getAllStories(page)
+      getAllStories: (page) => getAllStories(page),
     };
-    
+
     const presenter = new HomePresenter({
       view,
-      storyService
+      storyService,
     });
-    
+
     // Inisialisasi Intersection Observer untuk infinite scroll
     const intersectionObserver = new IntersectionObserver(
       (entries) => {
@@ -98,10 +98,10 @@ export default class HomePage {
         threshold: 0.1,
       }
     );
-    
+
     // Mulai observasi target
     intersectionObserver.observe(observerTarget);
-    
+
     // Muat data cerita
     await presenter.getAllStories();
   }

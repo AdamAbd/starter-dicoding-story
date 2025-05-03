@@ -35,12 +35,12 @@ class LoginPage {
   async afterRender() {
     // Cek apakah user sudah login
     checkUnauthenticatedRouteOnly(this);
-    
+
     const loginForm = document.getElementById('loginForm');
     const presenter = new LoginPresenter({
       loginForm,
     });
-    
+
     presenter.init();
   }
 }

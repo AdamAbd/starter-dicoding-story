@@ -114,11 +114,11 @@
   .auth-card {
     padding: 20px;
   }
-  
+
   .auth-title {
     font-size: 1.8rem;
   }
-  
+
   .auth-buttons {
     flex-direction: column;
     gap: 5px;

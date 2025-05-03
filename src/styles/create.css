@@ -167,11 +167,11 @@
   .create-card {
     padding: 20px;
   }
-  
+
   .photo-actions {
     flex-direction: column;
   }
-  
+
   .submit-actions {
     flex-direction: column;
   }

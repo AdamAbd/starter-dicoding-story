@@ -30,7 +30,7 @@ class StoryDetailDialog extends HTMLElement {
     try {
       this._showLoading();
       this._dialog.showModal();
-      
+
       const story = await getStoryDetail(id);
       this._story = story;
       this._renderStoryDetail();
@@ -47,7 +47,7 @@ class StoryDetailDialog extends HTMLElement {
     if (this._dialog && this._dialog.open) {
       this._dialog.close();
     }
-    
+
     // Reset map jika ada
     if (this._map) {
       this._map.remove();
@@ -61,7 +61,7 @@ class StoryDetailDialog extends HTMLElement {
    */
   _initDialog() {
     this._dialog = this.querySelector('dialog');
-    
+
     // Tambahkan event listener untuk tombol close
     const closeButton = this.querySelector('.dialog-close');
     if (closeButton) {
@@ -69,7 +69,7 @@ class StoryDetailDialog extends HTMLElement {
         this.close();
       });
     }
-    
+
     // Tutup dialog saat klik di luar dialog (backdrop)
     this._dialog.addEventListener('click', (event) => {
       const dialogDimensions = this._dialog.getBoundingClientRect();
@@ -141,14 +141,14 @@ class StoryDetailDialog extends HTMLElement {
     if (!this._story) return;
 
     const { name, description, photoUrl, createdAt, lat, lon } = this._story;
-    
+
     const date = new Date(createdAt);
     const formattedDate = new Intl.DateTimeFormat('id-ID', {
       day: 'numeric',
       month: 'long',
       year: 'numeric',
       hour: '2-digit',
-      minute: '2-digit'
+      minute: '2-digit',
     }).format(date);
 
     const initial = name.charAt(0).toUpperCase();
@@ -174,13 +174,17 @@ class StoryDetailDialog extends HTMLElement {
           <div class="story-detail-description">
             ${description}
           </div>
-          ${hasLocation ? `
+          ${
+            hasLocation
+              ? `
             <div class="story-detail-location">
               <i class="fa-solid fa-location-dot"></i>
               <span>Lokasi ditandai pada peta</span>
             </div>
             <div id="story-map" class="story-detail-map"></div>
-          ` : ''}
+          `
+              : ''
+          }
         </div>
       `;
 
@@ -227,33 +231,43 @@ class StoryDetailDialog extends HTMLElement {
 
       // Tambahkan tile layer dari MapTiler
       L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+        attribution:
+          '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
         maxZoom: 19,
       }).addTo(this._map);
 
       // Tambahkan marker
       this._marker = L.marker([lat, lon]).addTo(this._map);
-      
+
       // Tambahkan popup ke marker
-      this._marker.bindPopup(`<b>${this._story.name}</b><br>Berbagi cerita dari lokasi ini`).openPopup();
+      this._marker
+        .bindPopup(
+          `<b>${this._story.name}</b><br>Berbagi cerita dari lokasi ini`
+        )
+        .openPopup();
 
       // Tambahkan layer control (opsional)
       const baseMaps = {
-        "Streets": L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-          attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+        Streets: L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+          attribution:
+            '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
           maxZoom: 19,
         }),
-        "Topography": L.tileLayer('https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png', {
-          attribution: '&copy; <a href="https://opentopomap.org">OpenTopoMap</a> contributors',
-          maxZoom: 17,
-        })
+        Topography: L.tileLayer(
+          'https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png',
+          {
+            attribution:
+              '&copy; <a href="https://opentopomap.org">OpenTopoMap</a> contributors',
+            maxZoom: 17,
+          }
+        ),
       };
-      
+
       L.control.layers(baseMaps).addTo(this._map);
 
       // Perbaiki tampilan peta setelah dialog ditampilkan
       this._map.invalidateSize();
-      
+
       this._isMapInitialized = true;
     }, 300);
   }

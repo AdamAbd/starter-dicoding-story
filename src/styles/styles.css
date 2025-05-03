@@ -5,12 +5,12 @@
 }
 
 :root {
-  --primary-color: #5D8BF4;
-  --secondary-color: #4C6FFF;
-  --accent-color: #3EC1D3;
-  --light-color: #F9F7F7;
-  --dark-color: #112D4E;
-  --gray-color: #DBE2EF;
+  --primary-color: #5d8bf4;
+  --secondary-color: #4c6fff;
+  --accent-color: #3ec1d3;
+  --light-color: #f9f7f7;
+  --dark-color: #112d4e;
+  --gray-color: #dbe2ef;
   --shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
@@ -26,7 +26,6 @@ body {
   margin: 0 auto;
   padding: 0 20px;
 }
-
 
 /* Skip Link Styles */
 .skip-link {
@@ -127,55 +126,73 @@ header {
 
 /* View Transition API Styles */
 @keyframes fade-in {
-  from { opacity: 0; }
-  to { opacity: 1; }
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
 @keyframes fade-out {
-  from { opacity: 1; }
-  to { opacity: 0; }
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
 }
 
 @keyframes slide-from-right {
-  from { transform: translateX(30px); }
-  to { transform: translateX(0); }
+  from {
+    transform: translateX(30px);
+  }
+  to {
+    transform: translateX(0);
+  }
 }
 
 @keyframes slide-to-left {
-  from { transform: translateX(0); }
-  to { transform: translateX(-30px); }
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-30px);
+  }
 }
 
 ::view-transition-old(root) {
-  animation: 300ms cubic-bezier(0.4, 0, 0.2, 1) both fade-out,
-             300ms cubic-bezier(0.4, 0, 0.2, 1) both slide-to-left;
+  animation:
+    300ms cubic-bezier(0.4, 0, 0.2, 1) both fade-out,
+    300ms cubic-bezier(0.4, 0, 0.2, 1) both slide-to-left;
 }
 
 ::view-transition-new(root) {
-  animation: 300ms cubic-bezier(0.4, 0, 0.2, 1) both fade-in,
-             300ms cubic-bezier(0.4, 0, 0.2, 1) both slide-from-right;
+  animation:
+    300ms cubic-bezier(0.4, 0, 0.2, 1) both fade-in,
+    300ms cubic-bezier(0.4, 0, 0.2, 1) both slide-from-right;
 }
 
 /* Mobile Friendly Styles */
 @media (max-width: 768px) {
   .navbar {
-      flex-wrap: wrap;
+    flex-wrap: wrap;
   }
-  
+
   .menu-toggle {
-      display: block;
-      order: 3;
+    display: block;
+    order: 3;
   }
-  
+
   .nav-links {
-      flex-basis: 100%;
-      display: none;
-      flex-direction: column;
-      padding: 20px 0;
-      gap: 15px;
+    flex-basis: 100%;
+    display: none;
+    flex-direction: column;
+    padding: 20px 0;
+    gap: 15px;
   }
-  
+
   .nav-links.active {
-      display: flex;
+    display: flex;
   }
 }

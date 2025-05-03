@@ -40,12 +40,12 @@ class RegisterPage {
   async afterRender() {
     // Cek apakah user sudah login
     checkUnauthenticatedRouteOnly(this);
-    
+
     const registerForm = document.getElementById('registerForm');
     const presenter = new RegisterPresenter({
       registerForm,
     });
-    
+
     presenter.init();
   }
 }

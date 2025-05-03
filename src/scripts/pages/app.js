@@ -23,7 +23,6 @@ class App {
       // if (!this.#navigationDrawer.contains(event.target) && !this.#drawerButton.contains(event.target)) {
       //   this.#navigationDrawer.classList.remove('open');
       // }
-
       // this.#navigationDrawer.querySelectorAll('a').forEach((link) => {
       //   if (link.contains(event.target)) {
       //     this.#navigationDrawer.classList.remove('open');

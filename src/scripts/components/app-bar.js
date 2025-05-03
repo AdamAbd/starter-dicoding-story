@@ -25,19 +25,23 @@ class AppBar extends HTMLElement {
               <i class="fa-solid fa-bars"></i>
             </div>
             <div class="nav-links" id="navLinks">
-              ${isLogin ? `
+              ${
+                isLogin
+                  ? `
                 <a href="#/setting"><i class="fa-solid fa-gear"></i> Settings</a>
                 <button class="btn btn-logout" id="logoutButton">
                   <i class="fa-solid fa-sign-out-alt"></i> Keluar
                 </button>
-              ` : `
+              `
+                  : `
                 <a href="#/login" class="btn btn-login">
                   <i class="fa-solid fa-sign-in-alt"></i> Masuk
                 </a>
                 <a href="#/register" class="btn btn-register">
                   <i class="fa-solid fa-user-plus"></i> Daftar
                 </a>
-              `}
+              `
+              }
             </div>
           </nav>
         </div>
@@ -60,7 +64,10 @@ class AppBar extends HTMLElement {
 
       // Tutup menu saat mengklik di luar menu
       document.addEventListener('click', (event) => {
-        if (!navLinks.contains(event.target) && !menuToggle.contains(event.target)) {
+        if (
+          !navLinks.contains(event.target) &&
+          !menuToggle.contains(event.target)
+        ) {
           navLinks.classList.remove('active');
         }
       });

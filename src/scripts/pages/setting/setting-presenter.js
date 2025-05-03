@@ -23,11 +23,14 @@ class SettingPresenter {
   _loadSavedSettings() {
     try {
       // Ambil pengaturan notifikasi dari localStorage
-      const pushNotificationEnabled = localStorage.getItem(this.PUSH_NOTIFICATION_KEY);
-      
+      const pushNotificationEnabled = localStorage.getItem(
+        this.PUSH_NOTIFICATION_KEY
+      );
+
       // Jika pengaturan sudah ada, terapkan ke checkbox
       if (pushNotificationEnabled !== null) {
-        this.pushNotificationCheckbox.checked = pushNotificationEnabled === 'true';
+        this.pushNotificationCheckbox.checked =
+          pushNotificationEnabled === 'true';
       }
     } catch (error) {
       console.error('Error loading settings:', error);
@@ -45,7 +48,7 @@ class SettingPresenter {
     try {
       // Simpan pengaturan notifikasi ke localStorage
       localStorage.setItem(
-        this.PUSH_NOTIFICATION_KEY, 
+        this.PUSH_NOTIFICATION_KEY,
         this.pushNotificationCheckbox.checked
       );
 
@@ -65,7 +68,7 @@ class SettingPresenter {
   _showSuccessMessage() {
     this.successMessage.style.display = 'block';
     this.errorMessage.style.display = 'none';
-    
+
     // Sembunyikan pesan sukses setelah 3 detik
     setTimeout(() => {
       this.successMessage.style.display = 'none';
@@ -75,7 +78,7 @@ class SettingPresenter {
   _showErrorMessage() {
     this.errorMessage.style.display = 'block';
     this.successMessage.style.display = 'none';
-    
+
     // Sembunyikan pesan error setelah 3 detik
     setTimeout(() => {
       this.errorMessage.style.display = 'none';
@@ -86,7 +89,10 @@ class SettingPresenter {
     // Periksa apakah browser mendukung notifikasi
     if ('Notification' in window) {
       // Jika izin belum diberikan, minta izin
-      if (Notification.permission !== 'granted' && Notification.permission !== 'denied') {
+      if (
+        Notification.permission !== 'granted' &&
+        Notification.permission !== 'denied'
+      ) {
         Notification.requestPermission();
       }
     }

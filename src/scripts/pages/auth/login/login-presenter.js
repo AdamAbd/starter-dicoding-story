@@ -39,7 +39,7 @@ class LoginPresenter {
 
       // Simpan token ke localStorage
       putAccessToken(responseJson.loginResult.token);
-      
+
       // Redirect ke halaman utama
       window.location.hash = '/';
     } catch (error) {
