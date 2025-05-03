@@ -124,6 +124,37 @@ header {
 
 /* Write your styles more here */
 
+/* View Transition API Styles */
+@keyframes fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes fade-out {
+  from { opacity: 1; }
+  to { opacity: 0; }
+}
+
+@keyframes slide-from-right {
+  from { transform: translateX(30px); }
+  to { transform: translateX(0); }
+}
+
+@keyframes slide-to-left {
+  from { transform: translateX(0); }
+  to { transform: translateX(-30px); }
+}
+
+::view-transition-old(root) {
+  animation: 300ms cubic-bezier(0.4, 0, 0.2, 1) both fade-out,
+             300ms cubic-bezier(0.4, 0, 0.2, 1) both slide-to-left;
+}
+
+::view-transition-new(root) {
+  animation: 300ms cubic-bezier(0.4, 0, 0.2, 1) both fade-in,
+             300ms cubic-bezier(0.4, 0, 0.2, 1) both slide-from-right;
+}
+
 /* Mobile Friendly Styles */
 @media (max-width: 768px) {
   .navbar {

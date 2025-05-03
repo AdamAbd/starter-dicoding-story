@@ -1,0 +1,126 @@
+/* Auth Styles */
+.auth-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 80vh;
+  padding: 20px;
+}
+
+.auth-card {
+  background-color: white;
+  border-radius: 10px;
+  box-shadow: var(--shadow);
+  padding: 30px;
+  width: 100%;
+  max-width: 450px;
+}
+
+.auth-title {
+  color: var(--primary-color);
+  font-size: 2rem;
+  margin-bottom: 10px;
+  text-align: center;
+}
+
+.auth-subtitle {
+  color: var(--dark-color);
+  text-align: center;
+  margin-bottom: 25px;
+}
+
+.form-group {
+  margin-bottom: 20px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 600;
+  color: var(--dark-color);
+}
+
+.form-group input {
+  width: 100%;
+  padding: 12px 15px;
+  border: 1px solid var(--gray-color);
+  border-radius: 5px;
+  font-size: 1rem;
+  transition: border-color 0.3s;
+}
+
+.form-group input:focus {
+  border-color: var(--primary-color);
+  outline: none;
+}
+
+.btn-auth {
+  width: 100%;
+  padding: 12px;
+  margin-top: 10px;
+  font-size: 1rem;
+  justify-content: center;
+}
+
+.auth-redirect {
+  text-align: center;
+  margin-top: 20px;
+  color: var(--dark-color);
+}
+
+.auth-redirect a {
+  color: var(--primary-color);
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.auth-redirect a:hover {
+  text-decoration: underline;
+}
+
+/* Auth Buttons in App Bar */
+.auth-buttons {
+  display: flex;
+  gap: 10px;
+}
+
+.btn-login {
+  background-color: transparent;
+  color: var(--primary-color);
+  border: 1px solid var(--primary-color);
+}
+
+.btn-login:hover {
+  background-color: var(--primary-color);
+  color: white;
+}
+
+.btn-register {
+  background-color: var(--primary-color);
+  color: white;
+}
+
+.btn-logout {
+  background-color: #f44336;
+  color: white;
+}
+
+.btn-logout:hover {
+  background-color: #d32f2f;
+}
+
+/* Responsive */
+@media (max-width: 480px) {
+  .auth-card {
+    padding: 20px;
+  }
+  
+  .auth-title {
+    font-size: 1.8rem;
+  }
+  
+  .auth-buttons {
+    flex-direction: column;
+    gap: 5px;
+  }
+}

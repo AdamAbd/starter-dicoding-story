@@ -1,3 +1,5 @@
+import { getAccessToken, getLogout } from '../utils/auth';
+
 class AppBar extends HTMLElement {
   constructor() {
     super();
@@ -8,6 +10,8 @@ class AppBar extends HTMLElement {
   }
 
   render() {
+    const isLogin = !!getAccessToken();
+
     this.innerHTML = `
       <a href="#main-content" class="skip-link">Lewati ke konten</a>
       <header>
@@ -22,14 +26,35 @@ class AppBar extends HTMLElement {
             </div>
             <div class="nav-links" id="navLinks">
               <a href="#/"><i class="fa-solid fa-house"></i> Beranda</a>
-              <a href="#/explore"><i class="fa-solid fa-compass"></i> Jelajahi</a>
-              <a href="#/saved"><i class="fa-solid fa-bookmark"></i> Tersimpan</a>
-              <a href="#/profile"><i class="fa-solid fa-user"></i> Profil</a>
+              ${isLogin ? `
+                <a href="#/explore"><i class="fa-solid fa-compass"></i> Jelajahi</a>
+                <a href="#/saved"><i class="fa-solid fa-bookmark"></i> Tersimpan</a>
+                <a href="#/profile"><i class="fa-solid fa-user"></i> Profil</a>
+              ` : ''}
             </div>
-            <button class="btn" id="createStoryButton">
-              <i class="fa-solid fa-plus"></i>
-              Buat Story
-            </button>
+            ${isLogin ? `
+              <div class="auth-buttons">
+                <button class="btn" id="createStoryButton">
+                  <i class="fa-solid fa-plus"></i>
+                  Buat Story
+                </button>
+                <button class="btn btn-logout" id="logoutButton">
+                  <i class="fa-solid fa-sign-out-alt"></i>
+                  Keluar
+                </button>
+              </div>
+            ` : `
+              <div class="auth-buttons">
+                <a href="#/login" class="btn btn-login">
+                  <i class="fa-solid fa-sign-in-alt"></i>
+                  Masuk
+                </a>
+                <a href="#/register" class="btn btn-register">
+                  <i class="fa-solid fa-user-plus"></i>
+                  Daftar
+                </a>
+              </div>
+            `}
           </nav>
         </div>
       </header>
@@ -42,10 +67,19 @@ class AppBar extends HTMLElement {
     const menuToggle = this.querySelector('#menuToggle');
     const navLinks = this.querySelector('#navLinks');
     const createStoryButton = this.querySelector('#createStoryButton');
+    const logoutButton = this.querySelector('#logoutButton');
 
     if (menuToggle) {
       menuToggle.addEventListener('click', () => {
         navLinks.classList.toggle('active');
+      });
+    }
+
+    if (logoutButton) {
+      logoutButton.addEventListener('click', () => {
+        getLogout();
+        window.location.hash = '/login';
+        window.location.reload();
       });
     }
 

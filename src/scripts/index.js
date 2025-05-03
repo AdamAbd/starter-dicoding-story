@@ -1,5 +1,6 @@
 // CSS imports
 import '../styles/styles.css';
+import '../styles/auth.css';
 
 // Import komponen
 import './components/app-bar';

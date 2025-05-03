@@ -20,15 +20,15 @@ class App {
     // });
 
     document.body.addEventListener('click', (event) => {
-      if (!this.#navigationDrawer.contains(event.target) && !this.#drawerButton.contains(event.target)) {
-        this.#navigationDrawer.classList.remove('open');
-      }
+      // if (!this.#navigationDrawer.contains(event.target) && !this.#drawerButton.contains(event.target)) {
+      //   this.#navigationDrawer.classList.remove('open');
+      // }
 
-      this.#navigationDrawer.querySelectorAll('a').forEach((link) => {
-        if (link.contains(event.target)) {
-          this.#navigationDrawer.classList.remove('open');
-        }
-      })
+      // this.#navigationDrawer.querySelectorAll('a').forEach((link) => {
+      //   if (link.contains(event.target)) {
+      //     this.#navigationDrawer.classList.remove('open');
+      //   }
+      // })
     });
   }
 
@@ -36,8 +36,22 @@ class App {
     const url = getActiveRoute();
     const page = routes[url];
 
-    this.#content.innerHTML = await page.render();
-    await page.afterRender();
+    // Menggunakan View Transition API untuk transisi halaman yang halus
+    if (document.startViewTransition) {
+      // Gunakan View Transition API jika didukung browser
+      const transition = document.startViewTransition(async () => {
+        // Perbarui DOM di dalam callback transisi
+        this.#content.innerHTML = await page.render();
+        await page.afterRender();
+      });
+
+      // Menunggu transisi selesai (opsional)
+      await transition.finished;
+    } else {
+      // Fallback untuk browser yang tidak mendukung View Transition API
+      this.#content.innerHTML = await page.render();
+      await page.afterRender();
+    }
   }
 }
 
