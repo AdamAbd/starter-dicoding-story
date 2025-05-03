@@ -1,11 +1,13 @@
 // CSS imports
 import '../styles/styles.css';
 import '../styles/auth.css';
+import '../styles/story-detail-dialog.css';
 
 // Import komponen
 import './components/app-bar';
 import './components/story-list';
 import './components/story-card';
+import './components/story-detail-dialog';
 import './components/app-footer';
 
 import App from './pages/app';
