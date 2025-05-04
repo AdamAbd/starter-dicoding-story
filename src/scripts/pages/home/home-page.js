@@ -4,6 +4,7 @@ import '../../../styles/home.css';
 import '../../../styles/loading.css';
 import HomePresenter from './home-presenter';
 import { getAllStories } from '../../data/api';
+import { checkAuthenticatedRouteOnly } from '../../utils/auth';
 
 export default class HomePage {
   async render() {
@@ -34,7 +35,8 @@ export default class HomePage {
   }
 
   async afterRender() {
-    // Inisialisasi presenter dengan view dan service
+    checkAuthenticatedRouteOnly();
+
     const storyListElement = document.querySelector('#storyList');
     const loadingElement = document.createElement('div');
     loadingElement.id = 'loading';
@@ -45,7 +47,6 @@ export default class HomePage {
     const loadingMoreElement = document.querySelector('#loading-container');
     const observerTarget = document.querySelector('#observer-target');
 
-    // Definisikan view interface untuk presenter
     const view = {
       showLoading: () => {
         loadingElement.style.display = 'block';
@@ -67,11 +68,9 @@ export default class HomePage {
       },
       showError: (message) => {
         console.error(message);
-        // Bisa ditambahkan tampilan error yang lebih baik di sini
       },
     };
 
-    // Inisialisasi presenter
     const storyService = {
       getAllStories: (page) => getAllStories(page),
     };
@@ -81,7 +80,6 @@ export default class HomePage {
       storyService,
     });
 
-    // Inisialisasi Intersection Observer untuk infinite scroll
     const intersectionObserver = new IntersectionObserver(
       (entries) => {
         if (entries[0].isIntersecting) {
@@ -95,10 +93,8 @@ export default class HomePage {
       }
     );
 
-    // Mulai observasi target
     intersectionObserver.observe(observerTarget);
 
-    // Muat data cerita
     await presenter.getAllStories();
   }
 }

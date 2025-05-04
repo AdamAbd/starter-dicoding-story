@@ -1,10 +1,10 @@
 import Swal from 'sweetalert2';
-import { registerUser } from '../../../data/api'; // Impor fungsi registerUser
+import { registerUser } from '../../../data/api';
 
 class RegisterPresenter {
   constructor({ registerForm }) {
     this._registerForm = registerForm;
-    this._submitButton = this._registerForm.querySelector('button[type="submit"]'); // Asumsi tombol submit ada di dalam form
+    this._submitButton = this._registerForm.querySelector('button[type="submit"]');
     this._isLoading = false;
   }
 

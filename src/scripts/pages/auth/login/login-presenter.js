@@ -5,7 +5,7 @@ import { loginUser } from '../../../data/api';
 class LoginPresenter {
   constructor({ loginForm }) {
     this._loginForm = loginForm;
-    this._submitButton = this._loginForm.querySelector('button[type="submit"]'); // Asumsi tombol submit ada di dalam form
+    this._submitButton = this._loginForm.querySelector('button[type="submit"]');
     this._isLoading = false;
   }
 

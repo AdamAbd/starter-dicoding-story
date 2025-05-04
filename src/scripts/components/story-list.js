@@ -6,17 +6,11 @@ class StoryList extends HTMLElement {
     this._stories = [];
   }
 
-  /**
-   * @param {Array} stories - Array berisi data cerita
-   */
   set stories(stories) {
     this._stories = stories;
     this.render();
   }
 
-  /**
-   * @returns {Array} - Array berisi data cerita saat ini
-   */
   get stories() {
     return this._stories;
   }
@@ -43,27 +37,21 @@ class StoryList extends HTMLElement {
 
     const storiesGrid = this.querySelector('#storiesGrid');
 
-    // Hapus semua story card yang ada
     storiesGrid.innerHTML = this._stories.length
       ? ''
       : '<p>Tidak ada cerita yang tersedia.</p>';
 
-    // Render setiap story card
     this._stories.forEach((story) => {
       const storyCard = document.createElement('story-card');
       storyCard.story = story;
       storiesGrid.appendChild(storyCard);
     });
 
-    // Tambahkan event listener untuk filter button
     const filterButtons = this.querySelectorAll('.filter-btn');
     filterButtons.forEach((button) => {
       button.addEventListener('click', () => {
-        // Hapus kelas active dari semua button
         filterButtons.forEach((btn) => btn.classList.remove('active'));
-        // Tambahkan kelas active ke button yang diklik
         button.classList.add('active');
-        // Implementasi filter akan ditambahkan nanti
       });
     });
   }

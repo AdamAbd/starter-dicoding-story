@@ -39,16 +39,11 @@ class SettingPage {
   }
 
   async afterRender() {
-    // Pastikan hanya user yang sudah login yang bisa mengakses halaman ini
     checkAuthenticatedRouteOnly();
 
     const presenter = new SettingPresenter({
       settingForm: document.querySelector('#settingForm'),
       pushNotificationCheckbox: document.querySelector('#pushNotification'),
-      // Properti berikut tidak lagi diperlukan
-      // saveButton: document.querySelector('#saveSettingButton'),
-      // successMessage: document.querySelector('#settingSuccess'),
-      // errorMessage: document.querySelector('#settingError'),
     });
 
     presenter.init();

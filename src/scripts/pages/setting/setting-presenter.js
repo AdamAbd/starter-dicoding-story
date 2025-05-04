@@ -9,17 +9,9 @@ class SettingPresenter {
   constructor({
     settingForm,
     pushNotificationCheckbox,
-    saveButton,
-    successMessage,
-    errorMessage,
   }) {
     this.settingForm = settingForm;
     this.pushNotificationCheckbox = pushNotificationCheckbox;
-    this.saveButton = saveButton;
-    this.successMessage = successMessage;
-    this.errorMessage = errorMessage;
-
-    this.PUSH_NOTIFICATION_KEY = 'dicoding_story_push_notification';
   }
 
   async init() {
@@ -44,33 +36,10 @@ class SettingPresenter {
     }
   }
 
-  _loadSavedSettings() {
-    // Fungsi ini tidak lagi diperlukan karena kita memeriksa langganan aktual
-    // Hapus atau komentari jika tidak digunakan lagi
-    // try {
-    //   const pushNotificationEnabled = localStorage.getItem(
-    //     this.PUSH_NOTIFICATION_KEY
-    //   );
-    //   if (pushNotificationEnabled !== null) {
-    //     this.pushNotificationCheckbox.checked =
-    //       pushNotificationEnabled === 'true';
-    //   }
-    // } catch (error) {
-    //   console.error('Error loading settings:', error);
-    // }
-  }
-
   _initEventListeners() {
-    // Ganti event listener dari 'submit' ke 'change' pada checkbox
     this.pushNotificationCheckbox.addEventListener('change', (event) => {
       this._handleNotificationChange(event.target.checked);
     });
-
-    // Hapus event listener submit form jika tidak ada tombol simpan lagi
-    // this.settingForm.addEventListener('submit', (event) => {
-    //   event.preventDefault();
-    //   this._saveSettings();
-    // });
   }
 
   async _handleNotificationChange(isChecked) {
@@ -89,7 +58,7 @@ class SettingPresenter {
 
       const permission = await Notification.requestPermission();
       if (permission !== 'granted') {
-        this.pushNotificationCheckbox.checked = false; // Kembalikan state jika izin ditolak
+        this.pushNotificationCheckbox.checked = false;
         Swal.fire(
           'Izin Ditolak',
           'Anda perlu memberikan izin notifikasi untuk mengaktifkan fitur ini.',
@@ -118,7 +87,7 @@ class SettingPresenter {
       );
     } catch (error) {
       console.error('Error subscribing:', error);
-      this.pushNotificationCheckbox.checked = false; // Kembalikan state jika gagal
+      this.pushNotificationCheckbox.checked = false;
       Swal.fire(
         'Gagal',
         `Gagal berlangganan notifikasi: ${error.message}`,
@@ -144,13 +113,9 @@ class SettingPresenter {
           'Anda berhasil berhenti berlangganan notifikasi push.',
           'success'
         );
-      } else {
-        // Jika tidak ada subscription, tidak perlu melakukan apa-apa
-        console.log('Tidak ada langganan aktif untuk dihentikan.');
       }
     } catch (error) {
       console.error('Error unsubscribing:', error);
-      // Tidak perlu mengembalikan state checkbox karena user memang ingin unsubscribe
       Swal.fire(
         'Gagal',
         `Gagal berhenti berlangganan notifikasi: ${error.message}`,

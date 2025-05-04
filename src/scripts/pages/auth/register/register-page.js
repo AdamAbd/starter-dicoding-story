@@ -4,7 +4,6 @@ import { checkUnauthenticatedRouteOnly } from '../../../utils/auth';
 class RegisterPage {
   async render() {
     return `
-      <app-bar></app-bar>
       <main>
         <section class="auth-container">
           <div class="auth-card">
@@ -19,12 +18,12 @@ class RegisterPage {
               
               <div class="form-group">
                 <label for="email">Email</label>
-                <input type="email" id="email" name="email" placeholder="Masukkan email" required>
+                <input type="email" id="email" name="email" autocomplete="username" placeholder="Masukkan email" required>
               </div>
               
               <div class="form-group">
                 <label for="password">Password</label>
-                <input type="password" id="password" name="password" placeholder="Masukkan password" required>
+                <input type="password" id="password" name="password" autocomplete="current-password" placeholder="Masukkan password" required>
               </div>
               
               <button type="submit" class="btn btn-auth">Daftar</button>

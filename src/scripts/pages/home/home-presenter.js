@@ -52,7 +52,6 @@ class HomePresenter {
 
       this._view.showError(error.message);
 
-      // Tampilkan data dummy jika API error (untuk keperluan development)
       if (resetPage) {
         this._loadDummyData();
       }

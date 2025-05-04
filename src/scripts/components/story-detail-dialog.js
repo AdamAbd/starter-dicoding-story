@@ -22,10 +22,6 @@ class StoryDetailDialog extends HTMLElement {
     }
   }
 
-  /**
-   * Menampilkan dialog dan memuat data cerita berdasarkan ID
-   * @param {string} id - ID cerita yang akan ditampilkan
-   */
   async showStory(id) {
     try {
       this._showLoading();
@@ -40,15 +36,11 @@ class StoryDetailDialog extends HTMLElement {
     }
   }
 
-  /**
-   * Menutup dialog
-   */
   close() {
     if (this._dialog && this._dialog.open) {
       this._dialog.close();
     }
 
-    // Reset map jika ada
     if (this._map) {
       this._map.remove();
       this._map = null;
@@ -56,13 +48,9 @@ class StoryDetailDialog extends HTMLElement {
     }
   }
 
-  /**
-   * Inisialisasi dialog dan event listener
-   */
   _initDialog() {
     this._dialog = this.querySelector('dialog');
 
-    // Tambahkan event listener untuk tombol close
     const closeButton = this.querySelector('.dialog-close');
     if (closeButton) {
       closeButton.addEventListener('click', () => {
@@ -70,7 +58,6 @@ class StoryDetailDialog extends HTMLElement {
       });
     }
 
-    // Tutup dialog saat klik di luar dialog (backdrop)
     this._dialog.addEventListener('click', (event) => {
       const dialogDimensions = this._dialog.getBoundingClientRect();
       if (
@@ -84,9 +71,6 @@ class StoryDetailDialog extends HTMLElement {
     });
   }
 
-  /**
-   * Menampilkan loading state
-   */
   _showLoading() {
     const dialogContent = this.querySelector('.dialog-content');
     if (dialogContent) {
@@ -99,10 +83,6 @@ class StoryDetailDialog extends HTMLElement {
     }
   }
 
-  /**
-   * Menampilkan error state
-   * @param {string} message - Pesan error yang akan ditampilkan
-   */
   _showError(message) {
     const dialogContent = this.querySelector('.dialog-content');
     if (dialogContent) {
@@ -120,7 +100,6 @@ class StoryDetailDialog extends HTMLElement {
         </div>
       `;
 
-      // Tambahkan event listener untuk tombol retry
       const retryButton = this.querySelector('#retry-button');
       if (retryButton && this._story && this._story.id) {
         retryButton.addEventListener('click', () => {
@@ -134,9 +113,6 @@ class StoryDetailDialog extends HTMLElement {
     }
   }
 
-  /**
-   * Render detail cerita
-   */
   _renderStoryDetail() {
     if (!this._story) return;
 
@@ -188,7 +164,6 @@ class StoryDetailDialog extends HTMLElement {
         </div>
       `;
 
-      // Reinisialisasi event listener untuk tombol close
       const closeButton = this.querySelector('.dialog-close');
       if (closeButton) {
         closeButton.addEventListener('click', () => {
@@ -196,57 +171,43 @@ class StoryDetailDialog extends HTMLElement {
         });
       }
 
-      // Inisialisasi peta jika ada lokasi
       if (hasLocation) {
         this._initMap(lat, lon);
       }
     }
   }
 
-  /**
-   * Inisialisasi peta Leaflet
-   * @param {number} lat - Latitude
-   * @param {number} lon - Longitude
-   */
   _initMap(lat, lon) {
-    // Pastikan Leaflet sudah dimuat
     if (!window.L) {
       console.error('Leaflet tidak tersedia');
       return;
     }
 
-    // Tunggu sebentar untuk memastikan elemen peta sudah dirender
     setTimeout(() => {
       const mapElement = document.getElementById('story-map');
       if (!mapElement) return;
 
-      // Hapus peta sebelumnya jika ada
       if (this._map) {
         this._map.remove();
         this._map = null;
       }
 
-      // Inisialisasi peta baru
       this._map = L.map('story-map').setView([lat, lon], 13);
 
-      // Tambahkan tile layer dari MapTiler
       L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution:
           '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
         maxZoom: 19,
       }).addTo(this._map);
 
-      // Tambahkan marker
       this._marker = L.marker([lat, lon]).addTo(this._map);
 
-      // Tambahkan popup ke marker
       this._marker
         .bindPopup(
           `<b>${this._story.name}</b><br>Berbagi cerita dari lokasi ini`
         )
         .openPopup();
 
-      // Tambahkan layer control (opsional)
       const baseMaps = {
         Streets: L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
           attribution:
@@ -265,7 +226,6 @@ class StoryDetailDialog extends HTMLElement {
 
       L.control.layers(baseMaps).addTo(this._map);
 
-      // Perbaiki tampilan peta setelah dialog ditampilkan
       this._map.invalidateSize();
 
       this._isMapInitialized = true;

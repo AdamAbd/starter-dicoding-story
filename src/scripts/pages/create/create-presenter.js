@@ -48,7 +48,7 @@ class CreatePresenter {
     this.map = null;
     this.marker = null;
     this.mediaStream = null;
-    this.isLoading = false; // Tambahkan state isLoading
+    this.isLoading = false;
   }
 
   init() {
@@ -57,7 +57,7 @@ class CreatePresenter {
   }
 
   _initMap() {
-    this.map = L.map(this.mapElement).setView([-6.2088, 106.8456], 13); // Default: Jakarta
+    this.map = L.map(this.mapElement).setView([-6.2088, 106.8456], 13);
 
     L.tileLayer(
       'https://api.maptiler.com/maps/streets/{z}/{x}/{y}.png?key=tnaKD7R2xm5uJ0elB52w',
@@ -276,7 +276,7 @@ class CreatePresenter {
       formData.lon = this.selectedLocation.lng;
     }
 
-    this._setLoading(true); // Mulai loading
+    this._setLoading(true);
 
     try {
       let response;
@@ -310,7 +310,7 @@ class CreatePresenter {
         confirmButtonText: 'Coba Lagi',
       });
     } finally {
-      this._setLoading(false); // Selesai loading
+      this._setLoading(false);
     }
   }
 

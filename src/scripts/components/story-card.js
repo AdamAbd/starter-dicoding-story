@@ -4,14 +4,6 @@ class StoryCard extends HTMLElement {
     this._story = null;
   }
 
-  /**
-   * @param {Object} story - Data cerita yang akan ditampilkan
-   * @param {string} story.id - ID cerita
-   * @param {string} story.name - Nama pengguna
-   * @param {string} story.description - Deskripsi cerita
-   * @param {string} story.photoUrl - URL foto cerita
-   * @param {string} story.createdAt - Tanggal pembuatan dalam format ISO
-   */
   set story(story) {
     this._story = story;
     this.render();
@@ -58,9 +50,6 @@ class StoryCard extends HTMLElement {
     `;
   }
 
-  /**
-   * Inisialisasi event listener untuk kartu cerita
-   */
   _initEventListeners() {
     const storyCard = this.querySelector('.story-card');
     if (storyCard && this._story) {
@@ -75,7 +64,6 @@ class StoryCard extends HTMLElement {
           document.body.appendChild(storyDetailDialog);
         }
 
-        // Tampilkan dialog dengan ID cerita
         storyDetailDialog.showStory(this._story.id);
       });
     }

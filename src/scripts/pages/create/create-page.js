@@ -32,14 +32,12 @@ class CreatePage {
                 <div id="photoError" class="form-error" style="display: none;"></div>
               </div>
               
-              <!-- Description Section -->
               <div class="form-group">
                 <label for="description">Deskripsi</label>
                 <textarea id="description" name="description" rows="4" placeholder="Ceritakan pengalamanmu..." required minlength="10"></textarea>
                 <div id="descriptionError" class="form-error" style="display: none;"></div>
               </div>
               
-              <!-- Map Section -->
               <div class="form-group map-container">
                 <label for="map">Lokasi</label>
                 <div id="map"></div>
@@ -49,7 +47,6 @@ class CreatePage {
                 </div>
               </div>
               
-              <!-- Submit Buttons -->
               <div class="submit-actions">
                 <button type="submit" class="btn btn-send" id="submitButton">
                   <i class="fa-solid fa-paper-plane"></i> Kirim Story
@@ -60,7 +57,6 @@ class CreatePage {
               </div>
             </form>
             
-            <!-- Camera Modal -->
             <div id="cameraModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 1000;">
               <div style="position: relative; width: 100%; max-width: 600px; margin: 50px auto; background: white; padding: 20px; border-radius: 10px;">
                 <button id="closeCameraModal" style="position: absolute; top: 10px; right: 10px; background: none; border: none; font-size: 1.5rem; cursor: pointer;">
@@ -82,10 +78,8 @@ class CreatePage {
   }
 
   async afterRender() {
-    // Cek apakah user sudah login
     checkAuthenticatedRouteOnly(this);
 
-    // Inisialisasi presenter
     const createStoryForm = document.getElementById('createStoryForm');
     const presenter = new CreatePresenter({
       createStoryForm,

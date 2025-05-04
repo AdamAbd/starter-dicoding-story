@@ -1,10 +1,8 @@
-// CSS imports
 import '../styles/styles.css';
 import '../styles/auth.css';
 import '../styles/story-detail-dialog.css';
 import '../styles/setting.css';
 
-// Import komponen
 import './components/app-bar';
 import './components/story-list';
 import './components/story-card';

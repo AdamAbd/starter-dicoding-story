@@ -62,7 +62,6 @@ class AppBar extends HTMLElement {
         navLinks.classList.toggle('active');
       });
 
-      // Tutup menu saat mengklik di luar menu
       document.addEventListener('click', (event) => {
         if (
           !navLinks.contains(event.target) &&
