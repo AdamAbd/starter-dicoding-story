@@ -209,6 +209,74 @@ export async function subscribePushNotification({ endpoint, keys }) {
  * @param {string} endpoint - Endpoint subscription yang ingin dihapus
  * @returns {Promise<Object>} - Respons dari server
  */
+/**
+ * Fungsi untuk melakukan login pengguna
+ * @param {Object} credentials - Kredensial pengguna
+ * @param {string} credentials.email - Email pengguna
+ * @param {string} credentials.password - Password pengguna
+ * @returns {Promise<Object>} - Respons dari server berisi token login
+ */
+export async function loginUser({ email, password }) {
+  try {
+    const response = await fetch(ENDPOINTS.LOGIN, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        email,
+        password,
+      }),
+    });
+
+    const responseJson = await response.json();
+
+    if (responseJson.error) {
+      throw new Error(responseJson.message);
+    }
+
+    return responseJson.loginResult;
+  } catch (error) {
+    console.error('Login error:', error);
+    throw new Error('Gagal melakukan login. ' + error.message);
+  }
+}
+
+/**
+ * Fungsi untuk mendaftarkan pengguna baru
+ * @param {Object} userData - Data pengguna baru
+ * @param {string} userData.name - Nama pengguna
+ * @param {string} userData.email - Email pengguna
+ * @param {string} userData.password - Password pengguna
+ * @returns {Promise<Object>} - Respons dari server
+ */
+export async function registerUser({ name, email, password }) {
+  try {
+    const response = await fetch(ENDPOINTS.REGISTER, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        name,
+        email,
+        password,
+      }),
+    });
+
+    const responseJson = await response.json();
+
+    if (responseJson.error) {
+      throw new Error(responseJson.message);
+    }
+
+    return responseJson;
+  } catch (error) {
+    console.error('Register error:', error);
+    throw new Error('Gagal melakukan pendaftaran. ' + error.message);
+  }
+}
+
 export async function unsubscribePushNotification(endpoint) {
   try {
     const token = localStorage.getItem('accessToken');

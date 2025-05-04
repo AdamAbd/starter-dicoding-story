@@ -4,7 +4,6 @@ import { checkUnauthenticatedRouteOnly } from '../../../utils/auth';
 class LoginPage {
   async render() {
     return `
-      <app-bar></app-bar>
       <main>
         <section class="auth-container">
           <div class="auth-card">

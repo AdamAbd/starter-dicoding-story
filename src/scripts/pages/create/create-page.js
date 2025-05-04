@@ -1,12 +1,10 @@
 import CreatePresenter from './create-presenter';
 import { checkAuthenticatedRouteOnly } from '../../utils/auth';
-import '../../components/app-bar';
 import '../../../styles/create.css';
 
 class CreatePage {
   async render() {
     return `
-      <app-bar></app-bar>
       <main>
         <section class="create-container">
           <div class="create-card">

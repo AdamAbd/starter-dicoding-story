@@ -1,9 +1,9 @@
-import CONFIG from '../../../config';
+import { registerUser } from '../../../data/api'; // Impor fungsi registerUser
 
 class RegisterPresenter {
   constructor({ registerForm }) {
     this._registerForm = registerForm;
-    this._registerEndpoint = `${CONFIG.BASE_URL}/register`;
+    // Hapus this._registerEndpoint karena tidak digunakan lagi
   }
 
   init() {
@@ -19,31 +19,16 @@ class RegisterPresenter {
       const email = document.getElementById('email').value;
       const password = document.getElementById('password').value;
 
-      const response = await fetch(this._registerEndpoint, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          name,
-          email,
-          password,
-        }),
-      });
-
-      const responseJson = await response.json();
-
-      if (responseJson.error) {
-        alert(responseJson.message);
-        return;
-      }
+      // Panggil fungsi registerUser dari api.js
+      await registerUser({ name, email, password });
 
       // Jika berhasil, arahkan ke halaman login
       alert('Pendaftaran berhasil! Silakan login.');
       window.location.hash = '/login';
     } catch (error) {
       console.error('Register error:', error);
-      alert('Terjadi kesalahan saat mendaftar. Silakan coba lagi.');
+      // Tampilkan pesan error dari API atau pesan default
+      alert(error.message || 'Terjadi kesalahan saat mendaftar. Silakan coba lagi.');
     }
   }
 }

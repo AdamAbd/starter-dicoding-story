@@ -1,12 +1,10 @@
 import SettingPresenter from './setting-presenter';
 import { checkAuthenticatedRouteOnly } from '../../utils/auth';
-import '../../components/app-bar';
 import '../../../styles/setting.css';
 
 class SettingPage {
   async render() {
     return `
-      <app-bar></app-bar>
       <main>
         <section class="setting-container">
           <div class="setting-card">

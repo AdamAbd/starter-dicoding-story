@@ -1,10 +1,10 @@
 import { putAccessToken } from '../../../utils/auth';
-import CONFIG from '../../../config';
+import { loginUser } from '../../../data/api'; // Impor fungsi loginUser
 
 class LoginPresenter {
   constructor({ loginForm }) {
     this._loginForm = loginForm;
-    this._loginEndpoint = `${CONFIG.BASE_URL}/login`;
+    // Hapus this._loginEndpoint karena tidak digunakan lagi
   }
 
   init() {
@@ -19,32 +19,18 @@ class LoginPresenter {
       const email = document.getElementById('email').value;
       const password = document.getElementById('password').value;
 
-      const response = await fetch(this._loginEndpoint, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          email,
-          password,
-        }),
-      });
-
-      const responseJson = await response.json();
-
-      if (responseJson.error) {
-        alert(responseJson.message);
-        return;
-      }
+      // Panggil fungsi loginUser dari api.js
+      const loginResult = await loginUser({ email, password });
 
       // Simpan token ke localStorage
-      putAccessToken(responseJson.loginResult.token);
+      putAccessToken(loginResult.token);
 
       // Redirect ke halaman utama
       window.location.hash = '/';
     } catch (error) {
       console.error('Login error:', error);
-      alert('Terjadi kesalahan saat login. Silakan coba lagi.');
+      // Tampilkan pesan error dari API atau pesan default
+      alert(error.message || 'Terjadi kesalahan saat login. Silakan coba lagi.');
     }
   }
 }

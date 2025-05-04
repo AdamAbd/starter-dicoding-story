@@ -1,6 +1,4 @@
-import '../../components/app-bar';
 import '../../components/story-list';
-import '../../components/app-footer';
 import '../../components/story-card-loading';
 import '../../../styles/home.css';
 import '../../../styles/loading.css';
@@ -10,7 +8,6 @@ import { getAllStories } from '../../data/api';
 export default class HomePage {
   async render() {
     return `
-      <app-bar></app-bar>
       <main id="main-content">
         <section class="hero">
           <div class="container">
@@ -33,7 +30,6 @@ export default class HomePage {
           <i class="fa-solid fa-plus"></i>
         </a>
       </main>
-      <app-footer></app-footer>
     `;
   }
 
