@@ -1,10 +1,12 @@
+import Swal from 'sweetalert2';
 import { putAccessToken } from '../../../utils/auth';
-import { loginUser } from '../../../data/api'; // Impor fungsi loginUser
+import { loginUser } from '../../../data/api';
 
 class LoginPresenter {
   constructor({ loginForm }) {
     this._loginForm = loginForm;
-    // Hapus this._loginEndpoint karena tidak digunakan lagi
+    this._submitButton = this._loginForm.querySelector('button[type="submit"]'); // Asumsi tombol submit ada di dalam form
+    this._isLoading = false;
   }
 
   init() {
@@ -15,22 +17,40 @@ class LoginPresenter {
   }
 
   async _login() {
+    this._setLoading(true);
     try {
       const email = document.getElementById('email').value;
       const password = document.getElementById('password').value;
 
-      // Panggil fungsi loginUser dari api.js
       const loginResult = await loginUser({ email, password });
 
-      // Simpan token ke localStorage
       putAccessToken(loginResult.token);
 
-      // Redirect ke halaman utama
-      window.location.hash = '/';
+      Swal.fire({
+        icon: 'success',
+        title: 'Login Berhasil!',
+        text: 'Anda akan diarahkan ke halaman utama.',
+        timer: 1500,
+        showConfirmButton: false,
+      }).then(() => {
+        window.location.hash = '/';
+      });
     } catch (error) {
-      console.error('Login error:', error);
-      // Tampilkan pesan error dari API atau pesan default
-      alert(error.message || 'Terjadi kesalahan saat login. Silakan coba lagi.');
+      Swal.fire({
+        icon: 'error',
+        title: 'Login Gagal',
+        text: error.message || 'Terjadi kesalahan saat login. Silakan coba lagi.',
+      });
+    } finally {
+      this._setLoading(false);
+    }
+  }
+
+  _setLoading(isLoading) {
+    this._isLoading = isLoading;
+    if (this._submitButton) {
+      this._submitButton.disabled = isLoading;
+      this._submitButton.innerHTML = isLoading ? '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Loading...' : 'Login';
     }
   }
 }

@@ -22,12 +22,15 @@ class SettingPage {
                 <p class="checkbox-description">Dapatkan pemberitahuan saat ada cerita baru dari komunitas Dicoding</p>
               </div>
               
+              <!-- Tombol Simpan dan Pesan tidak lagi diperlukan -->
+              <!-- 
               <button type="submit" class="btn-save" id="saveSettingButton">
                 <i class="fa-solid fa-save"></i> Simpan Pengaturan
               </button>
               
               <div id="settingSuccess" class="setting-success">Pengaturan berhasil disimpan!</div>
               <div id="settingError" class="setting-error">Gagal menyimpan pengaturan. Silakan coba lagi.</div>
+              -->
             </form>
           </div>
         </section>
@@ -42,9 +45,10 @@ class SettingPage {
     const presenter = new SettingPresenter({
       settingForm: document.querySelector('#settingForm'),
       pushNotificationCheckbox: document.querySelector('#pushNotification'),
-      saveButton: document.querySelector('#saveSettingButton'),
-      successMessage: document.querySelector('#settingSuccess'),
-      errorMessage: document.querySelector('#settingError'),
+      // Properti berikut tidak lagi diperlukan
+      // saveButton: document.querySelector('#saveSettingButton'),
+      // successMessage: document.querySelector('#settingSuccess'),
+      // errorMessage: document.querySelector('#settingError'),
     });
 
     presenter.init();

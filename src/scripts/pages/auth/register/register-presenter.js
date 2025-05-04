@@ -1,9 +1,11 @@
+import Swal from 'sweetalert2';
 import { registerUser } from '../../../data/api'; // Impor fungsi registerUser
 
 class RegisterPresenter {
   constructor({ registerForm }) {
     this._registerForm = registerForm;
-    // Hapus this._registerEndpoint karena tidak digunakan lagi
+    this._submitButton = this._registerForm.querySelector('button[type="submit"]'); // Asumsi tombol submit ada di dalam form
+    this._isLoading = false;
   }
 
   init() {
@@ -14,21 +16,40 @@ class RegisterPresenter {
   }
 
   async _register() {
+    this._setLoading(true);
     try {
       const name = document.getElementById('name').value;
       const email = document.getElementById('email').value;
       const password = document.getElementById('password').value;
 
-      // Panggil fungsi registerUser dari api.js
       await registerUser({ name, email, password });
 
-      // Jika berhasil, arahkan ke halaman login
-      alert('Pendaftaran berhasil! Silakan login.');
-      window.location.hash = '/login';
+      Swal.fire({
+        icon: 'success',
+        title: 'Pendaftaran Berhasil!',
+        text: 'Silakan login dengan akun Anda.',
+        timer: 1500,
+        showConfirmButton: false,
+      }).then(() => {
+        window.location.hash = '/login';
+      });
     } catch (error) {
       console.error('Register error:', error);
-      // Tampilkan pesan error dari API atau pesan default
-      alert(error.message || 'Terjadi kesalahan saat mendaftar. Silakan coba lagi.');
+      Swal.fire({
+        icon: 'error',
+        title: 'Pendaftaran Gagal',
+        text: error.message || 'Terjadi kesalahan saat mendaftar. Silakan coba lagi.',
+      });
+    } finally {
+      this._setLoading(false);
+    }
+  }
+
+  _setLoading(isLoading) {
+    this._isLoading = isLoading;
+    if (this._submitButton) {
+      this._submitButton.disabled = isLoading;
+      this._submitButton.innerHTML = isLoading ? '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Loading...' : 'Register';
     }
   }
 }

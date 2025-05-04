@@ -1,5 +1,5 @@
+import Swal from 'sweetalert2';
 import { addStory, addStoryAsGuest } from '../../data/api';
-import CONFIG from '../../config';
 
 class CreatePresenter {
   constructor({
@@ -43,12 +43,12 @@ class CreatePresenter {
     this.cameraPreview = cameraPreview;
     this.captureButton = captureButton;
 
-    // State
     this.selectedPhoto = null;
     this.selectedLocation = null;
     this.map = null;
     this.marker = null;
     this.mediaStream = null;
+    this.isLoading = false; // Tambahkan state isLoading
   }
 
   init() {
@@ -57,10 +57,8 @@ class CreatePresenter {
   }
 
   _initMap() {
-    // Inisialisasi peta Leaflet
     this.map = L.map(this.mapElement).setView([-6.2088, 106.8456], 13); // Default: Jakarta
 
-    // Tambahkan tile layer dari MapTiler dengan API key
     L.tileLayer(
       'https://api.maptiler.com/maps/streets/{z}/{x}/{y}.png?key=tnaKD7R2xm5uJ0elB52w',
       {
@@ -70,7 +68,6 @@ class CreatePresenter {
       }
     ).addTo(this.map);
 
-    // Tambahkan layer control dengan beberapa opsi layer
     const baseMaps = {
       Streets: L.tileLayer(
         'https://api.maptiler.com/maps/streets/{z}/{x}/{y}.png?key=tnaKD7R2xm5uJ0elB52w',
@@ -92,32 +89,26 @@ class CreatePresenter {
 
     L.control.layers(baseMaps).addTo(this.map);
 
-    // Tambahkan event listener untuk klik pada peta
     this.map.on('click', (e) => {
       const { lat, lng } = e.latlng;
       this._updateMarker(lat, lng);
     });
 
-    // Resize peta setelah dirender
     setTimeout(() => {
       this.map.invalidateSize();
     }, 100);
   }
 
   _updateMarker(lat, lng) {
-    // Hapus marker sebelumnya jika ada
     if (this.marker) {
       this.map.removeLayer(this.marker);
     }
 
-    // Tambahkan marker baru
     this.marker = L.marker([lat, lng]).addTo(this.map);
     this.marker.bindPopup('Lokasi cerita Anda').openPopup();
 
-    // Simpan lokasi yang dipilih
     this.selectedLocation = { lat, lng };
 
-    // Update teks lokasi
     this.locationText.textContent = `Lat: ${lat.toFixed(6)}, Lng: ${lng.toFixed(6)}`;
   }
 
@@ -132,7 +123,6 @@ class CreatePresenter {
   }
 
   _initEventListeners() {
-    // Event untuk memilih foto dari file
     this.selectPhotoButton.addEventListener('click', () => {
       this.photoInput.click();
     });
@@ -144,7 +134,6 @@ class CreatePresenter {
       }
     });
 
-    // Event untuk mengambil foto dari kamera
     this.takePictureButton.addEventListener('click', () => {
       this._openCamera();
     });
@@ -157,42 +146,35 @@ class CreatePresenter {
       this._capturePhoto();
     });
 
-    // Event untuk reset lokasi
     this.resetLocation.addEventListener('click', () => {
       this._resetLocation();
     });
 
-    // Event untuk submit form
     this.createStoryForm.addEventListener('submit', (event) => {
       event.preventDefault();
       this._validateAndSubmit(false);
     });
 
-    // Event untuk submit sebagai tamu
     this.submitAsGuestButton.addEventListener('click', () => {
       this._validateAndSubmit(true);
     });
 
-    // Validasi deskripsi saat input
     this.description.addEventListener('input', () => {
       this._validateDescription();
     });
   }
 
   _validateAndPreviewPhoto(file) {
-    // Validasi tipe file
     if (!file.type.match('image.*')) {
       this._showPhotoError('File harus berupa gambar (JPG, PNG, GIF)');
       return;
     }
 
-    // Validasi ukuran file (max 1MB)
     if (file.size > 1024 * 1024) {
       this._showPhotoError('Ukuran gambar maksimal 1MB');
       return;
     }
 
-    // Preview foto
     const reader = new FileReader();
     reader.onload = (e) => {
       this.previewImage.src = e.target.result;
@@ -224,10 +206,8 @@ class CreatePresenter {
   }
 
   _openCamera() {
-    // Buka modal kamera
     this.cameraModal.style.display = 'block';
 
-    // Akses kamera
     navigator.mediaDevices
       .getUserMedia({ video: true })
       .then((stream) => {
@@ -244,10 +224,8 @@ class CreatePresenter {
   }
 
   _closeCamera() {
-    // Tutup modal kamera
     this.cameraModal.style.display = 'none';
 
-    // Hentikan stream kamera jika ada
     if (this.mediaStream) {
       this.mediaStream.getTracks().forEach((track) => track.stop());
       this.mediaStream = null;
@@ -255,7 +233,6 @@ class CreatePresenter {
   }
 
   _capturePhoto() {
-    // Ambil foto dari kamera
     const canvas = document.createElement('canvas');
     const context = canvas.getContext('2d');
     const video = this.cameraPreview;
@@ -264,18 +241,14 @@ class CreatePresenter {
     canvas.height = video.videoHeight;
     context.drawImage(video, 0, 0, canvas.width, canvas.height);
 
-    // Konversi ke blob
     canvas.toBlob(
       (blob) => {
-        // Buat file dari blob
         const file = new File([blob], 'camera-photo.jpg', {
           type: 'image/jpeg',
         });
 
-        // Validasi dan preview foto
         this._validateAndPreviewPhoto(file);
 
-        // Tutup kamera
         this._closeCamera();
       },
       'image/jpeg',
@@ -284,53 +257,75 @@ class CreatePresenter {
   }
 
   async _validateAndSubmit(asGuest) {
-    // Validasi foto
     if (!this.selectedPhoto) {
       this._showPhotoError('Silakan pilih foto terlebih dahulu');
       return;
     }
 
-    // Validasi deskripsi
     if (!this._validateDescription()) {
       return;
     }
 
-    // Persiapkan data untuk dikirim
     const formData = {
       photo: this.selectedPhoto,
       description: this.description.value,
     };
 
-    // Tambahkan lokasi jika ada
     if (this.selectedLocation) {
       formData.lat = this.selectedLocation.lat;
       formData.lon = this.selectedLocation.lng;
     }
 
-    try {
-      // Disable tombol submit
-      this.submitButton.disabled = true;
-      this.submitAsGuestButton.disabled = true;
+    this._setLoading(true); // Mulai loading
 
-      // Kirim data ke API berdasarkan mode (user atau guest)
+    try {
       let response;
       if (asGuest) {
         response = await addStoryAsGuest(formData);
-        alert('Story berhasil ditambahkan sebagai tamu!');
+        Swal.fire({
+          title: 'Berhasil!',
+          text: 'Story berhasil ditambahkan sebagai tamu!',
+          icon: 'success',
+          confirmButtonText: 'OK',
+        }).then(() => {
+          window.location.hash = '/';
+        });
       } else {
         response = await addStory(formData);
-        alert('Story berhasil ditambahkan!');
+        Swal.fire({
+          title: 'Berhasil!',
+          text: 'Story berhasil ditambahkan!',
+          icon: 'success',
+          confirmButtonText: 'OK',
+        }).then(() => {
+          window.location.hash = '/';
+        });
       }
-
-      // Redirect ke halaman home
-      window.location.hash = '/';
     } catch (error) {
       console.error('Error submitting story:', error);
-      alert(`Gagal menambahkan story: ${error.message}`);
+      Swal.fire({
+        title: 'Gagal!',
+        text: `Gagal menambahkan story: ${error.message}`,
+        icon: 'error',
+        confirmButtonText: 'Coba Lagi',
+      });
     } finally {
-      // Enable kembali tombol submit
+      this._setLoading(false); // Selesai loading
+    }
+  }
+
+  _setLoading(isLoading) {
+    this.isLoading = isLoading;
+    if (isLoading) {
+      this.submitButton.disabled = true;
+      this.submitButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Mengirim...';
+      this.submitAsGuestButton.disabled = true;
+      this.submitAsGuestButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Mengirim...';
+    } else {
       this.submitButton.disabled = false;
+      this.submitButton.innerHTML = '<i class="fa-solid fa-paper-plane"></i> Kirim Story';
       this.submitAsGuestButton.disabled = false;
+      this.submitAsGuestButton.innerHTML = '<i class="fa-solid fa-user-secret"></i> Kirim Sebagai Tamu';
     }
   }
 }
