@@ -318,14 +318,18 @@ class CreatePresenter {
     this.isLoading = isLoading;
     if (isLoading) {
       this.submitButton.disabled = true;
-      this.submitButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Mengirim...';
+      this.submitButton.innerHTML =
+        '<i class="fas fa-spinner fa-spin"></i> Mengirim...';
       this.submitAsGuestButton.disabled = true;
-      this.submitAsGuestButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Mengirim...';
+      this.submitAsGuestButton.innerHTML =
+        '<i class="fas fa-spinner fa-spin"></i> Mengirim...';
     } else {
       this.submitButton.disabled = false;
-      this.submitButton.innerHTML = '<i class="fa-solid fa-paper-plane"></i> Kirim Story';
+      this.submitButton.innerHTML =
+        '<i class="fa-solid fa-paper-plane"></i> Kirim Story';
       this.submitAsGuestButton.disabled = false;
-      this.submitAsGuestButton.innerHTML = '<i class="fa-solid fa-user-secret"></i> Kirim Sebagai Tamu';
+      this.submitAsGuestButton.innerHTML =
+        '<i class="fa-solid fa-user-secret"></i> Kirim Sebagai Tamu';
     }
   }
 }

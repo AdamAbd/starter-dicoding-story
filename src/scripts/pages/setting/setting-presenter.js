@@ -1,15 +1,15 @@
 import Swal from 'sweetalert2';
-import { subscribePushNotification, unsubscribePushNotification } from '../../data/api';
+import {
+  subscribePushNotification,
+  unsubscribePushNotification,
+} from '../../data/api';
 import { urlBase64ToUint8Array } from '../../utils/push-notification';
 
 const VAPID_PUBLIC_KEY =
   'BCCs2eonMI-6H2ctvFaWg-UYdDv387Vno_bzUzALpB442r2lCnsHmtrx8biyPi_E-1fSGABK_Qs_GlvPoJJqxbk';
 
 class SettingPresenter {
-  constructor({
-    settingForm,
-    pushNotificationCheckbox,
-  }) {
+  constructor({ settingForm, pushNotificationCheckbox }) {
     this.settingForm = settingForm;
     this.pushNotificationCheckbox = pushNotificationCheckbox;
   }
@@ -27,12 +27,14 @@ class SettingPresenter {
         this.pushNotificationCheckbox.checked = !!subscription;
       } else {
         this.pushNotificationCheckbox.disabled = true;
-        this.pushNotificationCheckbox.title = 'Push Notification tidak didukung di browser ini.';
+        this.pushNotificationCheckbox.title =
+          'Push Notification tidak didukung di browser ini.';
       }
     } catch (error) {
       console.error('Error checking initial subscription:', error);
       this.pushNotificationCheckbox.disabled = true;
-      this.pushNotificationCheckbox.title = 'Gagal memeriksa status langganan notifikasi.';
+      this.pushNotificationCheckbox.title =
+        'Gagal memeriksa status langganan notifikasi.';
     }
   }
 

@@ -4,7 +4,9 @@ import { registerUser } from '../../../data/api';
 class RegisterPresenter {
   constructor({ registerForm }) {
     this._registerForm = registerForm;
-    this._submitButton = this._registerForm.querySelector('button[type="submit"]');
+    this._submitButton = this._registerForm.querySelector(
+      'button[type="submit"]'
+    );
     this._isLoading = false;
   }
 
@@ -38,7 +40,9 @@ class RegisterPresenter {
       Swal.fire({
         icon: 'error',
         title: 'Pendaftaran Gagal',
-        text: error.message || 'Terjadi kesalahan saat mendaftar. Silakan coba lagi.',
+        text:
+          error.message ||
+          'Terjadi kesalahan saat mendaftar. Silakan coba lagi.',
       });
     } finally {
       this._setLoading(false);
@@ -49,7 +53,9 @@ class RegisterPresenter {
     this._isLoading = isLoading;
     if (this._submitButton) {
       this._submitButton.disabled = isLoading;
-      this._submitButton.innerHTML = isLoading ? '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Loading...' : 'Register';
+      this._submitButton.innerHTML = isLoading
+        ? '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Loading...'
+        : 'Register';
     }
   }
 }

@@ -8,7 +8,6 @@ const ENDPOINTS = {
   STORY_DETAIL: (id) => `${CONFIG.BASE_URL}/stories/${id}`,
 };
 
-
 export async function loginUser({ email, password }) {
   try {
     const response = await fetch(ENDPOINTS.LOGIN, {

@@ -39,7 +39,8 @@ class LoginPresenter {
       Swal.fire({
         icon: 'error',
         title: 'Login Gagal',
-        text: error.message || 'Terjadi kesalahan saat login. Silakan coba lagi.',
+        text:
+          error.message || 'Terjadi kesalahan saat login. Silakan coba lagi.',
       });
     } finally {
       this._setLoading(false);
@@ -50,7 +51,9 @@ class LoginPresenter {
     this._isLoading = isLoading;
     if (this._submitButton) {
       this._submitButton.disabled = isLoading;
-      this._submitButton.innerHTML = isLoading ? '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Loading...' : 'Login';
+      this._submitButton.innerHTML = isLoading
+        ? '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Loading...'
+        : 'Login';
     }
   }
 }
