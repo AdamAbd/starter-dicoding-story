@@ -7,6 +7,11 @@ class AppBar extends HTMLElement {
 
   connectedCallback() {
     this.render();
+    window.addEventListener('hashchange', this.render.bind(this));
+  }
+
+  disconnectedCallback() {
+    window.removeEventListener('hashchange', this.render.bind(this));
   }
 
   render() {

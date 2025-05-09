@@ -4,9 +4,15 @@ import '../../../styles/home.css';
 import '../../../styles/loading.css';
 import HomePresenter from './home-presenter';
 import { getAllStories } from '../../data/api';
-import { checkAuthenticatedRouteOnly } from '../../utils/auth';
 
 export default class HomePage {
+  #presenter;
+  #observerTarget;
+  #storyListElement;
+  #loadingElement;
+  #loadingMoreElement;
+  #intersectionObserver;
+
   async render() {
     return `
       <main id="main-content">
@@ -35,55 +41,65 @@ export default class HomePage {
   }
 
   async afterRender() {
-    checkAuthenticatedRouteOnly();
+    // Inisialisasi elemen DOM
+    this.#storyListElement = document.querySelector('#storyList');
+    this.#loadingElement = document.createElement('div');
+    this.#loadingElement.id = 'loading';
+    this.#loadingElement.innerHTML = '<p>Memuat cerita...</p>';
+    this.#loadingElement.style.display = 'none';
+    this.#storyListElement.after(this.#loadingElement);
 
-    const storyListElement = document.querySelector('#storyList');
-    const loadingElement = document.createElement('div');
-    loadingElement.id = 'loading';
-    loadingElement.innerHTML = '<p>Memuat cerita...</p>';
-    loadingElement.style.display = 'none';
-    storyListElement.after(loadingElement);
+    this.#loadingMoreElement = document.querySelector('#loading-container');
+    this.#observerTarget = document.querySelector('#observer-target');
 
-    const loadingMoreElement = document.querySelector('#loading-container');
-    const observerTarget = document.querySelector('#observer-target');
-
+    // Mendefinisikan View (dalam bentuk objek yang memiliki method-method untuk UI)
     const view = {
       showLoading: () => {
-        loadingElement.style.display = 'block';
+        this.#loadingElement.style.display = 'block';
       },
       hideLoading: () => {
-        loadingElement.style.display = 'none';
+        this.#loadingElement.style.display = 'none';
       },
       showLoadingMore: () => {
-        loadingMoreElement.classList.remove('hidden');
+        this.#loadingMoreElement.classList.remove('hidden');
       },
       hideLoadingMore: () => {
-        loadingMoreElement.classList.add('hidden');
+        this.#loadingMoreElement.classList.add('hidden');
       },
       showStories: (stories) => {
-        storyListElement.stories = stories;
+        this.#storyListElement.stories = stories;
       },
       showEmptyStories: () => {
-        storyListElement.stories = [];
+        this.#storyListElement.stories = [];
       },
       showError: (message) => {
         console.error(message);
       },
     };
 
+    // Mendefinisikan service untuk mengakses data
     const storyService = {
       getAllStories: (page) => getAllStories(page),
     };
 
-    const presenter = new HomePresenter({
+    // Inisialisasi presenter
+    this.#presenter = new HomePresenter({
       view,
       storyService,
     });
 
-    const intersectionObserver = new IntersectionObserver(
+    // Setup Intersection Observer untuk infinite scroll
+    this.#setupIntersectionObserver();
+
+    // Muat cerita awal
+    await this.#presenter.getAllStories();
+  }
+
+  #setupIntersectionObserver() {
+    this.#intersectionObserver = new IntersectionObserver(
       (entries) => {
         if (entries[0].isIntersecting) {
-          presenter.loadMoreStories();
+          this.#presenter.loadMoreStories();
         }
       },
       {
@@ -93,8 +109,6 @@ export default class HomePage {
       }
     );
 
-    intersectionObserver.observe(observerTarget);
-
-    await presenter.getAllStories();
+    this.#intersectionObserver.observe(this.#observerTarget);
   }
 }
