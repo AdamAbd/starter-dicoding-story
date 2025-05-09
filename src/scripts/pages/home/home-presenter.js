@@ -1,71 +1,74 @@
-class HomePresenter {
+export default class HomePresenter {
+  #view;
+  #storyService;
+  #stories = [];
+  #currentPage = 1;
+  #hasMoreStories = true;
+  #isLoading = false;
+
   constructor({ view, storyService }) {
-    this._view = view;
-    this._storyService = storyService;
-    this._stories = [];
-    this._currentPage = 1;
-    this._hasMoreStories = true;
-    this._isLoading = false;
+    this.#view = view;
+    this.#storyService = storyService;
   }
 
   async getAllStories(resetPage = true) {
-    if (this._isLoading) return;
+    if (this.#isLoading) return;
 
     try {
       if (resetPage) {
-        this._currentPage = 1;
-        this._stories = [];
-        this._hasMoreStories = true;
-        this._view.showLoading();
+        this.#currentPage = 1;
+        this.#stories = [];
+        this.#hasMoreStories = true;
+        this.#view.showLoading();
       } else {
-        this._view.showLoadingMore();
+        this.#view.showLoadingMore();
       }
 
-      this._isLoading = true;
-      const result = await this._storyService.getAllStories(this._currentPage);
-      this._isLoading = false;
+      this.#isLoading = true;
+      const result = await this.#storyService.getAllStories(this.#currentPage);
+      this.#isLoading = false;
 
       if (resetPage) {
-        this._view.hideLoading();
+        this.#view.hideLoading();
       } else {
-        this._view.hideLoadingMore();
+        this.#view.hideLoadingMore();
       }
 
-      this._hasMoreStories = result.hasMore;
+      this.#hasMoreStories = result.hasMore;
 
       if (result.stories.length > 0) {
-        this._stories = resetPage
+        this.#stories = resetPage
           ? result.stories
-          : [...this._stories, ...result.stories];
-        this._view.showStories(this._stories);
+          : [...this.#stories, ...result.stories];
+        this.#view.showStories(this.#stories);
       } else if (resetPage) {
-        this._view.showEmptyStories();
+        this.#view.showEmptyStories();
       }
     } catch (error) {
-      this._isLoading = false;
+      this.#isLoading = false;
 
       if (resetPage) {
-        this._view.hideLoading();
+        this.#view.hideLoading();
       } else {
-        this._view.hideLoadingMore();
+        this.#view.hideLoadingMore();
       }
 
-      this._view.showError(error.message);
+      this.#view.showError(error.message);
 
       if (resetPage) {
-        this._loadDummyData();
+        this.#loadDummyData();
       }
     }
   }
 
   async loadMoreStories() {
-    if (this._isLoading || this._hasMoreStories) return;
+    if (this.#isLoading || !this.#hasMoreStories) return;
 
-    this._currentPage += 1;
+    this.#currentPage += 1;
     await this.getAllStories(false);
   }
 
-  _loadDummyData() {
+  #loadDummyData() {
     // Data dummy untuk keperluan development
     const dummyStories = [
       {
@@ -103,8 +106,6 @@ class HomePresenter {
       },
     ];
 
-    this._view.showStories(dummyStories);
+    this.#view.showStories(dummyStories);
   }
 }
-
-export default HomePresenter;

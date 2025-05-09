@@ -1,63 +1,41 @@
-import Swal from 'sweetalert2';
 import { registerUser } from '../../../data/api';
 
-class RegisterPresenter {
-  constructor({ registerForm }) {
-    this._registerForm = registerForm;
-    this._submitButton = this._registerForm.querySelector(
-      'button[type="submit"]'
-    );
-    this._isLoading = false;
+export default class RegisterPresenter {
+  #view;
+  #model;
+
+  constructor({ view }) {
+    this.#view = view;
+    this.#model = {
+      register: async (data) => {
+        const response = await registerUser(data);
+        return {
+          ok: true,
+          message: 'Pendaftaran berhasil',
+          data: response,
+        };
+      },
+    };
   }
 
-  init() {
-    this._registerForm.addEventListener('submit', (event) => {
-      event.preventDefault();
-      this._register();
-    });
-  }
-
-  async _register() {
-    this._setLoading(true);
+  async register({ name, email, password }) {
+    this.#view.showSubmitLoadingButton();
+    
     try {
-      const name = document.getElementById('name').value;
-      const email = document.getElementById('email').value;
-      const password = document.getElementById('password').value;
-
-      await registerUser({ name, email, password });
-
-      Swal.fire({
-        icon: 'success',
-        title: 'Pendaftaran Berhasil!',
-        text: 'Silakan login dengan akun Anda.',
-        timer: 1500,
-        showConfirmButton: false,
-      }).then(() => {
-        window.location.hash = '/login';
-      });
+      const response = await this.#model.register({ name, email, password });
+      
+      if (!response.ok) {
+        console.error('register: response:', response);
+        this.#view.registerFailed(response.message);
+        return;
+      }
+      
+      this.#view.registerSuccessfully(response.message);
     } catch (error) {
-      console.error('Register error:', error);
-      Swal.fire({
-        icon: 'error',
-        title: 'Pendaftaran Gagal',
-        text:
-          error.message ||
-          'Terjadi kesalahan saat mendaftar. Silakan coba lagi.',
-      });
+      console.error('register: error:', error);
+      this.#view.registerFailed(error.message);
     } finally {
-      this._setLoading(false);
-    }
-  }
-
-  _setLoading(isLoading) {
-    this._isLoading = isLoading;
-    if (this._submitButton) {
-      this._submitButton.disabled = isLoading;
-      this._submitButton.innerHTML = isLoading
-        ? '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Loading...'
-        : 'Register';
+      this.#view.hideSubmitLoadingButton();
     }
   }
 }
-
-export default RegisterPresenter;

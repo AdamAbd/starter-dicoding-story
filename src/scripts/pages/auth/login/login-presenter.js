@@ -1,61 +1,49 @@
-import Swal from 'sweetalert2';
-import { putAccessToken } from '../../../utils/auth';
 import { loginUser } from '../../../data/api';
+import { putAccessToken } from '../../../utils/auth';
 
-class LoginPresenter {
-  constructor({ loginForm }) {
-    this._loginForm = loginForm;
-    this._submitButton = this._loginForm.querySelector('button[type="submit"]');
-    this._isLoading = false;
+export default class LoginPresenter {
+  #view;
+  #authModel;
+  #model;
+
+  constructor({ view }) {
+    this.#view = view;
+    this.#authModel = {
+      putAccessToken,
+    };
+    this.#model = {
+      login: async (data) => {
+        const response = await loginUser(data);
+        return {
+          ok: true,
+          data: {
+            accessToken: response.token,
+          },
+          message: 'Login berhasil',
+        };
+      },
+    };
   }
 
-  init() {
-    this._loginForm.addEventListener('submit', (event) => {
-      event.preventDefault();
-      this._login();
-    });
-  }
-
-  async _login() {
-    this._setLoading(true);
+  async login({ email, password }) {
+    this.#view.showSubmitLoadingButton();
+    
     try {
-      const email = document.getElementById('email').value;
-      const password = document.getElementById('password').value;
-
-      const loginResult = await loginUser({ email, password });
-
-      putAccessToken(loginResult.token);
-
-      Swal.fire({
-        icon: 'success',
-        title: 'Login Berhasil!',
-        text: 'Anda akan diarahkan ke halaman utama.',
-        timer: 1500,
-        showConfirmButton: false,
-      }).then(() => {
-        window.location.hash = '/';
-      });
+      const response = await this.#model.login({ email, password });
+      
+      if (!response.ok) {
+        console.error('login: response:', response);
+        this.#view.loginFailed(response.message);
+        return;
+      }
+      
+      this.#authModel.putAccessToken(response.data.accessToken);
+      this.#view.loginSuccessfully(response.message, response.data);
     } catch (error) {
-      Swal.fire({
-        icon: 'error',
-        title: 'Login Gagal',
-        text:
-          error.message || 'Terjadi kesalahan saat login. Silakan coba lagi.',
-      });
+      console.error('login: error:', error);
+      this.#view.loginFailed(error.message);
     } finally {
-      this._setLoading(false);
-    }
-  }
-
-  _setLoading(isLoading) {
-    this._isLoading = isLoading;
-    if (this._submitButton) {
-      this._submitButton.disabled = isLoading;
-      this._submitButton.innerHTML = isLoading
-        ? '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Loading...'
-        : 'Login';
+      this.#view.hideSubmitLoadingButton();
     }
   }
 }
-
-export default LoginPresenter;

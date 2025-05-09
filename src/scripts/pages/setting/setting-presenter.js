@@ -1,4 +1,3 @@
-import Swal from 'sweetalert2';
 import {
   subscribePushNotification,
   unsubscribePushNotification,
@@ -8,43 +7,47 @@ import { urlBase64ToUint8Array } from '../../utils/push-notification';
 const VAPID_PUBLIC_KEY =
   'BCCs2eonMI-6H2ctvFaWg-UYdDv387Vno_bzUzALpB442r2lCnsHmtrx8biyPi_E-1fSGABK_Qs_GlvPoJJqxbk';
 
-class SettingPresenter {
-  constructor({ settingForm, pushNotificationCheckbox }) {
-    this.settingForm = settingForm;
-    this.pushNotificationCheckbox = pushNotificationCheckbox;
+export default class SettingPresenter {
+  #view;
+
+  constructor({ view }) {
+    this.#view = view;
   }
 
   async init() {
     await this._checkInitialSubscription();
-    this._initEventListeners();
   }
 
   async _checkInitialSubscription() {
-    try {
-      if ('serviceWorker' in navigator && 'PushManager' in window) {
-        const registration = await navigator.serviceWorker.ready;
-        const subscription = await registration.pushManager.getSubscription();
-        this.pushNotificationCheckbox.checked = !!subscription;
-      } else {
-        this.pushNotificationCheckbox.disabled = true;
-        this.pushNotificationCheckbox.title =
-          'Push Notification tidak didukung di browser ini.';
-      }
-    } catch (error) {
-      console.error('Error checking initial subscription:', error);
-      this.pushNotificationCheckbox.disabled = true;
-      this.pushNotificationCheckbox.title =
-        'Gagal memeriksa status langganan notifikasi.';
+    const swResult = await this.#view.getServiceWorkerRegistration();
+    
+    if (!swResult.supported) {
+      this.#view.setPushNotificationState(
+        false, 
+        true, 
+        'Push Notification tidak didukung di browser ini.'
+      );
+      return;
     }
+    
+    const { registration } = swResult;
+    const subscriptionResult = await this.#view.getPushSubscription(registration);
+    
+    if (subscriptionResult.error) {
+      this.#view.setPushNotificationState(
+        false, 
+        true, 
+        'Gagal memeriksa status langganan notifikasi.'
+      );
+      console.error('Error checking subscription:', subscriptionResult.error);
+      return;
+    }
+    
+    const isSubscribed = !!subscriptionResult.subscription;
+    this.#view.setPushNotificationState(isSubscribed);
   }
 
-  _initEventListeners() {
-    this.pushNotificationCheckbox.addEventListener('change', (event) => {
-      this._handleNotificationChange(event.target.checked);
-    });
-  }
-
-  async _handleNotificationChange(isChecked) {
+  async onNotificationChange(isChecked) {
     if (isChecked) {
       await this._subscribe();
     } else {
@@ -53,78 +56,112 @@ class SettingPresenter {
   }
 
   async _subscribe() {
-    try {
-      if (!('serviceWorker' in navigator) || !('PushManager' in window)) {
-        throw new Error('Push Notification tidak didukung.');
-      }
-
-      const permission = await Notification.requestPermission();
-      if (permission !== 'granted') {
-        this.pushNotificationCheckbox.checked = false;
-        Swal.fire(
-          'Izin Ditolak',
-          'Anda perlu memberikan izin notifikasi untuk mengaktifkan fitur ini.',
-          'warning'
+    // Cek dukungan service worker melalui view
+    const swResult = await this.#view.getServiceWorkerRegistration();
+    
+    if (!swResult.supported) {
+      this.#view.showErrorMessage(
+        'Gagal',
+        'Push Notification tidak didukung.'
+      );
+      return;
+    }
+    
+    // Minta izin notifikasi melalui view
+    const permissionResult = await this.#view.requestNotificationPermission();
+    
+    if (!permissionResult.granted) {
+      this.#view.setPushNotificationState(false);
+      this.#view.showWarningMessage(
+        'Izin Ditolak',
+        'Anda perlu memberikan izin notifikasi untuk mengaktifkan fitur ini.'
+      );
+      return;
+    }
+    
+    const { registration } = swResult;
+    
+    // Cek apakah sudah ada langganan
+    const subscriptionResult = await this.#view.getPushSubscription(registration);
+    let subscription = subscriptionResult.subscription;
+    
+    // Jika belum ada langganan, buat baru
+    if (!subscription) {
+      const convertedVapidKey = urlBase64ToUint8Array(VAPID_PUBLIC_KEY);
+      const createResult = await this.#view.createPushSubscription(registration, convertedVapidKey);
+      
+      if (createResult.error) {
+        this.#view.setPushNotificationState(false);
+        this.#view.showErrorMessage(
+          'Gagal',
+          `Gagal berlangganan notifikasi: ${createResult.error.message}`
         );
+        console.error('Error subscribing:', createResult.error);
         return;
       }
-
-      const registration = await navigator.serviceWorker.ready;
-      let subscription = await registration.pushManager.getSubscription();
-
-      if (!subscription) {
-        const convertedVapidKey = urlBase64ToUint8Array(VAPID_PUBLIC_KEY);
-        subscription = await registration.pushManager.subscribe({
-          userVisibleOnly: true,
-          applicationServerKey: convertedVapidKey,
-        });
-      }
-
+      
+      subscription = createResult.subscription;
+    }
+    
+    try {
+      // Kirim langganan ke server
       await subscribePushNotification(subscription.toJSON());
-
-      Swal.fire(
+      
+      this.#view.showSuccessMessage(
         'Berhasil!',
-        'Anda berhasil berlangganan notifikasi push.',
-        'success'
+        'Anda berhasil berlangganan notifikasi push.'
       );
     } catch (error) {
-      console.error('Error subscribing:', error);
-      this.pushNotificationCheckbox.checked = false;
-      Swal.fire(
+      this.#view.setPushNotificationState(false);
+      this.#view.showErrorMessage(
         'Gagal',
-        `Gagal berlangganan notifikasi: ${error.message}`,
-        'error'
+        `Gagal berlangganan notifikasi: ${error.message}`
       );
+      console.error('Error subscribing to server:', error);
     }
   }
 
   async _unsubscribe() {
-    try {
-      if (!('serviceWorker' in navigator) || !('PushManager' in window)) {
-        throw new Error('Push Notification tidak didukung.');
-      }
-
-      const registration = await navigator.serviceWorker.ready;
-      const subscription = await registration.pushManager.getSubscription();
-
-      if (subscription) {
-        await unsubscribePushNotification(subscription.endpoint);
-        await subscription.unsubscribe();
-        Swal.fire(
-          'Berhasil!',
-          'Anda berhasil berhenti berlangganan notifikasi push.',
-          'success'
-        );
-      }
-    } catch (error) {
-      console.error('Error unsubscribing:', error);
-      Swal.fire(
+    // Cek dukungan service worker melalui view
+    const swResult = await this.#view.getServiceWorkerRegistration();
+    
+    if (!swResult.supported) {
+      this.#view.showErrorMessage(
         'Gagal',
-        `Gagal berhenti berlangganan notifikasi: ${error.message}`,
-        'error'
+        'Push Notification tidak didukung.'
       );
+      return;
+    }
+    
+    const { registration } = swResult;
+    
+    // Dapatkan langganan saat ini
+    const subscriptionResult = await this.#view.getPushSubscription(registration);
+    const subscription = subscriptionResult.subscription;
+    
+    if (subscription) {
+      try {
+        // Hapus langganan dari server
+        await unsubscribePushNotification(subscription.endpoint);
+        
+        // Hapus langganan di browser
+        const unsubResult = await this.#view.unsubscribePush(subscription);
+        
+        if (unsubResult.error) {
+          throw unsubResult.error;
+        }
+        
+        this.#view.showSuccessMessage(
+          'Berhasil!',
+          'Anda berhasil berhenti berlangganan notifikasi push.'
+        );
+      } catch (error) {
+        this.#view.showErrorMessage(
+          'Gagal',
+          `Gagal berhenti berlangganan notifikasi: ${error.message}`
+        );
+        console.error('Error unsubscribing:', error);
+      }
     }
   }
 }
-
-export default SettingPresenter;
