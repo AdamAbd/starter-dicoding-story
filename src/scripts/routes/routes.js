@@ -4,14 +4,19 @@ import LoginPage from '../pages/auth/login/login-page';
 import RegisterPage from '../pages/auth/register/register-page';
 import CreatePage from '../pages/create/create-page';
 import SettingPage from '../pages/setting/setting-page';
+import {
+  checkAuthenticatedRoute,
+  checkUnauthenticatedRouteOnly,
+} from '../utils/auth';
 
 const routes = {
-  '/': new HomePage(),
-  '/about': new AboutPage(),
-  '/login': new LoginPage(),
-  '/register': new RegisterPage(),
-  '/create': new CreatePage(),
-  '/setting': new SettingPage(),
+  '/login': () => checkUnauthenticatedRouteOnly(new LoginPage()),
+  '/register': () => checkUnauthenticatedRouteOnly(new RegisterPage()),
+
+  '/': () => checkAuthenticatedRoute(new HomePage()),
+  '/about': () => checkAuthenticatedRoute(new AboutPage()),
+  '/create': () => checkAuthenticatedRoute(new CreatePage()),
+  '/setting': () => checkAuthenticatedRoute(new SettingPage()),
 };
 
 export default routes;
