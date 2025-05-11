@@ -7,7 +7,7 @@ class SettingPage {
 
   async render() {
     return `
-      <main>
+      <main id="main-content">
         <section class="setting-container">
           <div class="setting-card">
             <h2 class="setting-title">Pengaturan</h2>
@@ -32,6 +32,15 @@ class SettingPage {
 
   async afterRender() {
     checkAuthenticatedRouteOnly();
+    
+    // Setup skip to content
+    const skipLink = document.querySelector('.skip-link');
+    const mainContent = document.querySelector('#main-content');
+    if (skipLink && mainContent) {
+      import('../../utils/index.js').then(({ setupSkipToContent }) => {
+        setupSkipToContent(skipLink, mainContent);
+      });
+    }
     
     this.#presenter = new SettingPresenter({ view: this });
     

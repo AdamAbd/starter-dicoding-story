@@ -18,7 +18,7 @@ class AppBar extends HTMLElement {
     const isLogin = !!getAccessToken();
 
     this.innerHTML = `
-      <a href="#main-content" class="skip-link">Lewati ke konten</a>
+      <button class="skip-link">Lewati ke konten</button>
       <header>
         <div class="container">
           <nav class="navbar">
