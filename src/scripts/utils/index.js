@@ -24,3 +24,12 @@ export function transitionHelper({ skipTransition = false, updateDOM }) {
 
   return document.startViewTransition(updateDOM);
 }
+
+export function setupSkipToContent(skipLink, mainContent) {
+  skipLink.addEventListener('click', function (event) {
+    event.preventDefault();
+    skipLink.blur();
+    mainContent.focus();
+    mainContent.scrollIntoView();
+  });
+}

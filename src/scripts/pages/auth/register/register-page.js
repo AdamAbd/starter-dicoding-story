@@ -12,7 +12,7 @@ class RegisterPage {
 
   async render() {
     return `
-      <main>
+      <main id="main-content">
         <section class="auth-container">
           <div class="auth-card">
             <h2 class="auth-title">Daftar</h2>
@@ -47,6 +47,15 @@ class RegisterPage {
   async afterRender() {
     // Cek apakah user sudah login
     checkUnauthenticatedRouteOnly(this);
+    
+    // Setup skip to content
+    const skipLink = document.querySelector('.skip-link');
+    const mainContent = document.querySelector('#main-content');
+    if (skipLink && mainContent) {
+      import('../../../utils/index.js').then(({ setupSkipToContent }) => {
+        setupSkipToContent(skipLink, mainContent);
+      });
+    }
 
     // Inisialisasi event listener
     this.#initEventListeners();

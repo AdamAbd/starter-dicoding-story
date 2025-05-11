@@ -1,13 +1,22 @@
 export default class AboutPage {
   async render() {
     return `
-      <section class="container">
-        <h1>About Page</h1>
-      </section>
+      <main id="main-content">
+        <section class="container">
+          <h1>About Page</h1>
+        </section>
+      </main>
     `;
   }
 
   async afterRender() {
-    // Do your job here
+    // Setup skip to content
+    const skipLink = document.querySelector('.skip-link');
+    const mainContent = document.querySelector('#main-content');
+    if (skipLink && mainContent) {
+      import('../../utils/index.js').then(({ setupSkipToContent }) => {
+        setupSkipToContent(skipLink, mainContent);
+      });
+    }
   }
 }
