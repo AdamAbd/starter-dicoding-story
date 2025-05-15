@@ -20,29 +20,30 @@ export default class SettingPresenter {
 
   async _checkInitialSubscription() {
     const swResult = await this.#view.getServiceWorkerRegistration();
-    
+
     if (!swResult.supported) {
       this.#view.setPushNotificationState(
-        false, 
-        true, 
+        false,
+        true,
         'Push Notification tidak didukung di browser ini.'
       );
       return;
     }
-    
+
     const { registration } = swResult;
-    const subscriptionResult = await this.#view.getPushSubscription(registration);
-    
+    const subscriptionResult =
+      await this.#view.getPushSubscription(registration);
+
     if (subscriptionResult.error) {
       this.#view.setPushNotificationState(
-        false, 
-        true, 
+        false,
+        true,
         'Gagal memeriksa status langganan notifikasi.'
       );
       console.error('Error checking subscription:', subscriptionResult.error);
       return;
     }
-    
+
     const isSubscribed = !!subscriptionResult.subscription;
     this.#view.setPushNotificationState(isSubscribed);
   }
@@ -58,18 +59,15 @@ export default class SettingPresenter {
   async _subscribe() {
     // Cek dukungan service worker melalui view
     const swResult = await this.#view.getServiceWorkerRegistration();
-    
+
     if (!swResult.supported) {
-      this.#view.showErrorMessage(
-        'Gagal',
-        'Push Notification tidak didukung.'
-      );
+      this.#view.showErrorMessage('Gagal', 'Push Notification tidak didukung.');
       return;
     }
-    
+
     // Minta izin notifikasi melalui view
     const permissionResult = await this.#view.requestNotificationPermission();
-    
+
     if (!permissionResult.granted) {
       this.#view.setPushNotificationState(false);
       this.#view.showWarningMessage(
@@ -78,18 +76,22 @@ export default class SettingPresenter {
       );
       return;
     }
-    
+
     const { registration } = swResult;
-    
+
     // Cek apakah sudah ada langganan
-    const subscriptionResult = await this.#view.getPushSubscription(registration);
+    const subscriptionResult =
+      await this.#view.getPushSubscription(registration);
     let subscription = subscriptionResult.subscription;
-    
+
     // Jika belum ada langganan, buat baru
     if (!subscription) {
       const convertedVapidKey = urlBase64ToUint8Array(VAPID_PUBLIC_KEY);
-      const createResult = await this.#view.createPushSubscription(registration, convertedVapidKey);
-      
+      const createResult = await this.#view.createPushSubscription(
+        registration,
+        convertedVapidKey
+      );
+
       if (createResult.error) {
         this.#view.setPushNotificationState(false);
         this.#view.showErrorMessage(
@@ -99,14 +101,14 @@ export default class SettingPresenter {
         console.error('Error subscribing:', createResult.error);
         return;
       }
-      
+
       subscription = createResult.subscription;
     }
-    
+
     try {
       // Kirim langganan ke server
       await subscribePushNotification(subscription.toJSON());
-      
+
       this.#view.showSuccessMessage(
         'Berhasil!',
         'Anda berhasil berlangganan notifikasi push.'
@@ -124,33 +126,31 @@ export default class SettingPresenter {
   async _unsubscribe() {
     // Cek dukungan service worker melalui view
     const swResult = await this.#view.getServiceWorkerRegistration();
-    
+
     if (!swResult.supported) {
-      this.#view.showErrorMessage(
-        'Gagal',
-        'Push Notification tidak didukung.'
-      );
+      this.#view.showErrorMessage('Gagal', 'Push Notification tidak didukung.');
       return;
     }
-    
+
     const { registration } = swResult;
-    
+
     // Dapatkan langganan saat ini
-    const subscriptionResult = await this.#view.getPushSubscription(registration);
+    const subscriptionResult =
+      await this.#view.getPushSubscription(registration);
     const subscription = subscriptionResult.subscription;
-    
+
     if (subscription) {
       try {
         // Hapus langganan dari server
         await unsubscribePushNotification(subscription.endpoint);
-        
+
         // Hapus langganan di browser
         const unsubResult = await this.#view.unsubscribePush(subscription);
-        
+
         if (unsubResult.error) {
           throw unsubResult.error;
         }
-        
+
         this.#view.showSuccessMessage(
           'Berhasil!',
           'Anda berhasil berhenti berlangganan notifikasi push.'

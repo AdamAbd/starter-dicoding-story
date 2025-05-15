@@ -27,16 +27,16 @@ export default class LoginPresenter {
 
   async login({ email, password }) {
     this.#view.showSubmitLoadingButton();
-    
+
     try {
       const response = await this.#model.login({ email, password });
-      
+
       if (!response.ok) {
         console.error('login: response:', response);
         this.#view.loginFailed(response.message);
         return;
       }
-      
+
       this.#authModel.putAccessToken(response.data.accessToken);
       this.#view.loginSuccessfully(response.message, response.data);
     } catch (error) {

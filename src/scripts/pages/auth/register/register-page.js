@@ -47,7 +47,7 @@ class RegisterPage {
   async afterRender() {
     // Cek apakah user sudah login
     checkUnauthenticatedRouteOnly(this);
-    
+
     // Setup skip to content
     const skipLink = document.querySelector('.skip-link');
     const mainContent = document.querySelector('#main-content');
@@ -65,13 +65,13 @@ class RegisterPage {
     const registerForm = document.getElementById('registerForm');
     registerForm.addEventListener('submit', async (event) => {
       event.preventDefault();
-      
+
       const data = {
         name: document.getElementById('name').value,
         email: document.getElementById('email').value,
         password: document.getElementById('password').value,
       };
-      
+
       await this.#presenter.register(data);
     });
   }
@@ -80,7 +80,8 @@ class RegisterPage {
   showSubmitLoadingButton() {
     const submitButton = document.getElementById('submitButton');
     submitButton.disabled = true;
-    submitButton.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Loading...';
+    submitButton.innerHTML =
+      '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Loading...';
   }
 
   hideSubmitLoadingButton() {

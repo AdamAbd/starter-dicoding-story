@@ -20,16 +20,16 @@ export default class RegisterPresenter {
 
   async register({ name, email, password }) {
     this.#view.showSubmitLoadingButton();
-    
+
     try {
       const response = await this.#model.register({ name, email, password });
-      
+
       if (!response.ok) {
         console.error('register: response:', response);
         this.#view.registerFailed(response.message);
         return;
       }
-      
+
       this.#view.registerSuccessfully(response.message);
     } catch (error) {
       console.error('register: error:', error);

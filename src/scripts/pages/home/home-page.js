@@ -48,7 +48,7 @@ export default class HomePage {
     this.#loadingElement.innerHTML = '<p>Memuat cerita...</p>';
     this.#loadingElement.style.display = 'none';
     this.#storyListElement.after(this.#loadingElement);
-    
+
     // Setup skip to content
     const skipLink = document.querySelector('.skip-link');
     const mainContent = document.querySelector('#main-content');
