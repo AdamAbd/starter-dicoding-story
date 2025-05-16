@@ -4,6 +4,7 @@ import LoginPage from '../pages/auth/login/login-page';
 import RegisterPage from '../pages/auth/register/register-page';
 import CreatePage from '../pages/create/create-page';
 import SettingPage from '../pages/setting/setting-page';
+import SavedStoryPage from '../pages/saved/saved-story-page';
 import {
   checkAuthenticatedRoute,
   checkUnauthenticatedRouteOnly,
@@ -17,6 +18,7 @@ const routes = {
   '/about': () => checkAuthenticatedRoute(new AboutPage()),
   '/create': () => checkAuthenticatedRoute(new CreatePage()),
   '/setting': () => checkAuthenticatedRoute(new SettingPage()),
+  '/saved': () => checkAuthenticatedRoute(new SavedStoryPage()),
 };
 
 export default routes;

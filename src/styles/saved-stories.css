@@ -1,0 +1,67 @@
+.saved-stories-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1.5rem;
+  padding: 1rem;
+}
+
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem;
+  text-align: center;
+  color: #888;
+  grid-column: 1 / -1;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  margin: 2rem auto;
+  max-width: 400px;
+  width: 100%;
+}
+
+.empty-state i {
+  margin-bottom: 1rem;
+  color: #ccc;
+}
+
+.page-title {
+  margin: 1.5rem 0;
+  padding: 0 1rem;
+  font-size: 1.8rem;
+  color: #333;
+}
+
+.story-actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.save-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0.5rem;
+  color: #666;
+  transition: color 0.2s ease;
+}
+
+.save-btn:hover {
+  color: #ff6b6b;
+}
+
+.save-btn i.fa-solid {
+  color: #ff6b6b;
+}
+
+.loading, .error {
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: 2rem;
+  color: #666;
+}
+
+.error {
+  color: #ff6b6b;
+}

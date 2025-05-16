@@ -2,6 +2,7 @@ import '../styles/styles.css';
 import '../styles/auth.css';
 import '../styles/story-detail-dialog.css';
 import '../styles/setting.css';
+import '../styles/saved-stories.css';
 
 import './components/app-bar';
 import './components/story-list';

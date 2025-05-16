@@ -33,6 +33,7 @@ class AppBar extends HTMLElement {
               ${
                 isLogin
                   ? `
+                <a href="#/saved"><i class="fa-solid fa-bookmark"></i> Tersimpan</a>
                 <a href="#/setting"><i class="fa-solid fa-gear"></i> Settings</a>
                 <button class="btn btn-logout" id="logoutButton">
                   <i class="fa-solid fa-sign-out-alt"></i> Keluar
