@@ -13,7 +13,9 @@ export function sleep(time = 1000) {
 
 export function transitionHelper({ skipTransition = false, updateDOM }) {
   if (skipTransition || !document.startViewTransition) {
-    const updateCallbackDone = Promise.resolve(updateDOM()).then(() => undefined);
+    const updateCallbackDone = Promise.resolve(updateDOM()).then(
+      () => undefined
+    );
 
     return {
       ready: Promise.reject(Error('View transitions unsupported')),

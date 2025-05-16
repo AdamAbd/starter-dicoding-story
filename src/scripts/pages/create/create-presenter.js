@@ -33,9 +33,11 @@ export default class CreatePresenter {
   validateDescription() {
     const minLength = 10;
     const description = this.#view.getDescriptionValue();
-    
+
     if (description.length < minLength) {
-      this.#view.showDescriptionError(`Deskripsi minimal ${minLength} karakter`);
+      this.#view.showDescriptionError(
+        `Deskripsi minimal ${minLength} karakter`
+      );
       return false;
     } else {
       this.#view.hideDescriptionError();
@@ -75,16 +77,16 @@ export default class CreatePresenter {
 
     try {
       let response;
-      let message = asGuest 
-        ? 'Story berhasil ditambahkan sebagai tamu!' 
+      let message = asGuest
+        ? 'Story berhasil ditambahkan sebagai tamu!'
         : 'Story berhasil ditambahkan!';
-        
+
       if (asGuest) {
         response = await this.#storyService.addStoryAsGuest(formData);
       } else {
         response = await this.#storyService.addStory(formData);
       }
-      
+
       this.#view.showSuccessMessage(message, asGuest);
     } catch (error) {
       console.error('Error submitting story:', error);

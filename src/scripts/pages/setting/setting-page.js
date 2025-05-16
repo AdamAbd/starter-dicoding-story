@@ -32,7 +32,7 @@ class SettingPage {
 
   async afterRender() {
     checkAuthenticatedRouteOnly();
-    
+
     // Setup skip to content
     const skipLink = document.querySelector('.skip-link');
     const mainContent = document.querySelector('#main-content');
@@ -41,46 +41,47 @@ class SettingPage {
         setupSkipToContent(skipLink, mainContent);
       });
     }
-    
+
     this.#presenter = new SettingPresenter({ view: this });
-    
+
     // Inisialisasi event listener di sisi View
     this.#initEventListeners();
-    
+
     // Inisialisasi presenter
     await this.#presenter.init();
   }
-  
+
   #initEventListeners() {
-    const pushNotificationCheckbox = document.querySelector('#pushNotification');
+    const pushNotificationCheckbox =
+      document.querySelector('#pushNotification');
     pushNotificationCheckbox.addEventListener('change', (event) => {
       this.#presenter.onNotificationChange(event.target.checked);
     });
   }
-  
+
   // Metode-metode View untuk digunakan oleh Presenter
   setPushNotificationState(isChecked, isDisabled = false, tooltipMessage = '') {
     const checkbox = document.querySelector('#pushNotification');
     checkbox.checked = isChecked;
     checkbox.disabled = isDisabled;
-    
+
     if (tooltipMessage) {
       checkbox.title = tooltipMessage;
     }
   }
-  
+
   showSuccessMessage(title, message) {
     this.#showAlert(title, message, 'success');
   }
-  
+
   showWarningMessage(title, message) {
     this.#showAlert(title, message, 'warning');
   }
-  
+
   showErrorMessage(title, message) {
     this.#showAlert(title, message, 'error');
   }
-  
+
   // Private method untuk menampilkan alert
   #showAlert(title, message, icon) {
     // Implementasi alert dengan Swal
@@ -89,23 +90,23 @@ class SettingPage {
       Swal.fire(title, message, icon);
     });
   }
-  
+
   // Method untuk meminta izin notifikasi
   async requestNotificationPermission() {
     if (!('Notification' in window)) {
       return { granted: false, reason: 'not-supported' };
     }
-    
+
     const permission = await Notification.requestPermission();
     return { granted: permission === 'granted', permission };
   }
-  
+
   // Method untuk mengakses Service Worker API
   async getServiceWorkerRegistration() {
     if (!('serviceWorker' in navigator) || !('PushManager' in window)) {
       return { supported: false };
     }
-    
+
     try {
       const registration = await navigator.serviceWorker.ready;
       return { supported: true, registration };
@@ -113,7 +114,7 @@ class SettingPage {
       return { supported: false, error };
     }
   }
-  
+
   // Method untuk mengakses Push Manager API
   async getPushSubscription(registration) {
     try {
@@ -123,7 +124,7 @@ class SettingPage {
       return { error };
     }
   }
-  
+
   async createPushSubscription(registration, applicationServerKey) {
     try {
       const subscription = await registration.pushManager.subscribe({
@@ -135,7 +136,7 @@ class SettingPage {
       return { error };
     }
   }
-  
+
   async unsubscribePush(subscription) {
     try {
       const result = await subscription.unsubscribe();

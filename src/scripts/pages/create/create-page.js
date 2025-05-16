@@ -118,7 +118,7 @@ class CreatePage {
 
     // Inisialisasi elemen-elemen DOM
     this.#initElements();
-    
+
     // Inisialisasi view dan storyService
     const view = this.#createView();
     const storyService = this.#createStoryService();
@@ -126,12 +126,12 @@ class CreatePage {
     // Inisialisasi presenter
     this.#presenter = new CreatePresenter({
       view,
-      storyService
+      storyService,
     });
 
     // Setup event listeners
     this.#setupEventListeners();
-    
+
     // Inisialisasi map
     this.#initMap();
   }
@@ -187,14 +187,18 @@ class CreatePage {
       setLoading: (isLoading) => {
         if (isLoading) {
           this.#submitButton.disabled = true;
-          this.#submitButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Mengirim...';
+          this.#submitButton.innerHTML =
+            '<i class="fas fa-spinner fa-spin"></i> Mengirim...';
           this.#submitAsGuestButton.disabled = true;
-          this.#submitAsGuestButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Mengirim...';
+          this.#submitAsGuestButton.innerHTML =
+            '<i class="fas fa-spinner fa-spin"></i> Mengirim...';
         } else {
           this.#submitButton.disabled = false;
-          this.#submitButton.innerHTML = '<i class="fa-solid fa-paper-plane"></i> Kirim Story';
+          this.#submitButton.innerHTML =
+            '<i class="fa-solid fa-paper-plane"></i> Kirim Story';
           this.#submitAsGuestButton.disabled = false;
-          this.#submitAsGuestButton.innerHTML = '<i class="fa-solid fa-user-secret"></i> Kirim Sebagai Tamu';
+          this.#submitAsGuestButton.innerHTML =
+            '<i class="fa-solid fa-user-secret"></i> Kirim Sebagai Tamu';
         }
       },
       showSuccessMessage: (message, asGuest) => {
@@ -220,14 +224,14 @@ class CreatePage {
       },
       closeCameraModal: () => {
         this.#cameraModal.style.display = 'none';
-      }
+      },
     };
   }
 
   #createStoryService() {
     return {
       addStory: (formData) => addStory(formData),
-      addStoryAsGuest: (formData) => addStoryAsGuest(formData)
+      addStoryAsGuest: (formData) => addStoryAsGuest(formData),
     };
   }
 
@@ -333,7 +337,7 @@ class CreatePage {
 
     this.#marker = L.marker([lat, lng]).addTo(this.#map);
     this.#marker.bindPopup('Lokasi cerita Anda').openPopup();
-    
+
     this.#locationText.textContent = `Lat: ${lat.toFixed(6)}, Lng: ${lng.toFixed(6)}`;
   }
 
@@ -358,7 +362,9 @@ class CreatePage {
       })
       .catch((error) => {
         console.error('Error accessing camera:', error);
-        alert('Tidak dapat mengakses kamera. Pastikan Anda memberikan izin akses kamera.');
+        alert(
+          'Tidak dapat mengakses kamera. Pastikan Anda memberikan izin akses kamera.'
+        );
         this.#closeCamera();
       });
   }
