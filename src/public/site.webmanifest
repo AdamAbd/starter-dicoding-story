@@ -1,6 +1,12 @@
 {
-  "name": "",
-  "short_name": "",
+  "name": "Dicoding Story App",
+  "short_name": "DicodingStory",
+  "theme_color": "#ffffff",
+  "background_color": "#ffffff",
+  "display": "standalone",
+  "orientation": "portrait",
+  "start_url": "/",
+  "description": "Bagikan pengalaman belajarmu di Dicoding dengan komunitas. Inspirasi, tantangan, dan keberhasilan - semua ada di sini!",
   "icons": [
     {
       "src": "/android-chrome-192x192.png",
@@ -13,7 +19,18 @@
       "type": "image/png"
     }
   ],
-  "theme_color": "#ffffff",
-  "background_color": "#ffffff",
-  "display": "standalone"
+  "screenshots": [
+    {
+      "src": "images/screenshots/DicodingStory-1.png",
+      "sizes": "1920x1043",
+      "type": "image/png",
+      "form_factor": "wide"
+    },
+    {
+      "src": "images/screenshots/DicodingStory-2.png",
+      "sizes": "1080x2280",
+      "type": "image/png",
+      "form_factor": "narrow"
+    }
+  ]
 }
