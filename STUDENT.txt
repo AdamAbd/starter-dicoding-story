@@ -1,2 +1,2 @@
-APP_URL=<url_aplikasi>
+APP_URL=https://nimble-gumption-012146.netlify.app/#/login
 MAP_SERVICE_API_KEY=<tnaKD7R2xm5uJ0elB52w>
