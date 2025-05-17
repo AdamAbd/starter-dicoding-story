@@ -2,7 +2,7 @@ import { precacheAndRoute } from 'workbox-precaching';
 import { registerRoute } from 'workbox-routing';
 import { CacheableResponsePlugin } from 'workbox-cacheable-response';
 import { NetworkFirst, CacheFirst, StaleWhileRevalidate } from 'workbox-strategies';
-import { BASE_URL } from './config';
+import CONFIG from './config';
 
 // Do precaching
 const manifest = self.__WB_MANIFEST;
@@ -46,8 +46,13 @@ registerRoute(
 // Cache API responses
 registerRoute(
   ({ request, url }) => {
-    const baseUrl = new URL(BASE_URL);
-    return baseUrl.origin === url.origin && request.destination !== 'image';
+    try {
+      const baseUrl = new URL(CONFIG.BASE_URL);
+      return baseUrl.origin === url.origin && request.destination !== 'image';
+    } catch (error) {
+      console.error('Invalid URL in API route matching:', error);
+      return false;
+    }
   },
   new NetworkFirst({
     cacheName: 'dicoding-story-api',
@@ -56,8 +61,13 @@ registerRoute(
 
 registerRoute(
   ({ request, url }) => {
-    const baseUrl = new URL(BASE_URL);
-    return baseUrl.origin === url.origin && request.destination === 'image';
+    try {
+      const baseUrl = new URL(CONFIG.BASE_URL);
+      return baseUrl.origin === url.origin && request.destination === 'image';
+    } catch (error) {
+      console.error('Invalid URL in image route matching:', error);
+      return false;
+    }
   },
   new StaleWhileRevalidate({
     cacheName: 'dicoding-story-api-images',
