@@ -93,15 +93,61 @@ registerRoute(
 
 // Handle push notification
 self.addEventListener('push', (event) => {
-  console.log('[Service worker] pushing...');
+  console.log('[Service worker] Push received');
 
   async function showNotification() {
-    const data = await event.data.json();
+    let data;
+    try {
+      data = await event.data.json();
+    } catch (error) {
+      console.error('Error parsing push data:', error);
+      data = {
+        title: 'Story berhasil dibuat',
+        options: {
+          body: 'Anda telah membuat story baru',
+        },
+      };
+    }
 
-    await self.registration.showNotification(data.title, {
+    return self.registration.showNotification(data.title, {
       body: data.options.body,
+      icon: '/android-chrome-192x192.png',
+      badge: '/favicon-32x32.png',
+      data: {
+        url: self.location.origin + '/#/home',
+      },
     });
   }
 
   event.waitUntil(showNotification());
+});
+
+// Handle notification click
+self.addEventListener('notificationclick', (event) => {
+  console.log('[Service Worker] Notification click received');
+
+  event.notification.close();
+
+  const urlToOpen = event.notification.data?.url || '/#/home';
+
+  event.waitUntil(
+    clients.matchAll({ type: 'window' }).then((windowClients) => {
+      // Check if there is already a window/tab open with the target URL
+      for (const client of windowClients) {
+        if (client.url === urlToOpen && 'focus' in client) {
+          return client.focus();
+        }
+      }
+      // If no window/tab is open, open a new one
+      if (clients.openWindow) {
+        return clients.openWindow(urlToOpen);
+      }
+    })
+  );
+});
+
+// Handle subscription change
+self.addEventListener('pushsubscriptionchange', (event) => {
+  console.log('[Service Worker] Push subscription changed');
+  // You can add code here to handle subscription changes if needed
 });

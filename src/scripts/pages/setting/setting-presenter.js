@@ -107,7 +107,14 @@ export default class SettingPresenter {
 
     try {
       // Kirim langganan ke server
-      await subscribePushNotification(subscription.toJSON());
+      const subscriptionJSON = subscription.toJSON();
+      await subscribePushNotification({
+        endpoint: subscriptionJSON.endpoint,
+        keys: {
+          p256dh: subscriptionJSON.keys.p256dh,
+          auth: subscriptionJSON.keys.auth
+        }
+      });
 
       this.#view.showSuccessMessage(
         'Berhasil!',

@@ -153,9 +153,7 @@ export async function subscribePushNotification({ endpoint, keys }) {
       },
       body: JSON.stringify({
         endpoint,
-        keys: JSON.stringify(keys),
-        p256dh: keys.p256dh,
-        auth: keys.auth,
+        keys,
       }),
     });
 
